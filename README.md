@@ -1,3 +1,4 @@
-# 2019-SWT-PR-B-TeamB-dev 
+# SWT Library (Team B)
 
-SWT Library Team B – Development
+* VC Kurs: https://vc.uni-bamberg.de/moodle/course/view.php?id=35450#section-4
+* SWLdocu: https://swldocu.swt.uni-bamberg.de/
