@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SWTlib</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -34,18 +34,57 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                      
                     </ul>
                 </div>
             </div>
+        </nav>*@
+        <nav class="navbar navbar-light bg-swt-secondary border-bottom box-shadow mb-3">
+            <div class="container">
+                <h1 class="mx-auto text-swt-secondary">@ViewBag.Title</h1>
+            </div>
         </nav>
+        
     </header>
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
+    <body>
+        <div class="container-fluid">
+            <div class="row ml-4 mr-4 sidenav">
+                <div class="col col-lg-2 bg-swt-primary">
+                    <ul class="nav flex-column bg-swt display-5">
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" asp-area="" asp-controller="Home" asp-action="Privacy">Rentals</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" href="#">Booksmarks</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" href="#">Wishlist</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" href="#">Statistics</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <div class="container">
+                        <partial name="_CookieConsentPartial" />
+                        <main role="main" class="pb-3">
+                            @RenderBody()
+                        </main>
+                    </div>
+                </div>
+                <div class="col col-lg-2 bg-swt-secondary">
+                    <div>
+                        <h3>Placeholder</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2019 - SWTlib - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
