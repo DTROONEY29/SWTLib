@@ -88,3 +88,17 @@ body {
     font-weight: 300;
     line-height: 1.2;
 }
+
+a.clean-link {
+    text-decoration: none;
+    color: black;
+}
+
+#books-hover:hover {
+    background-color: darkgray !important;
+}
+
+#img-button {
+    width: 64px;
+    height: 64px;
+}
