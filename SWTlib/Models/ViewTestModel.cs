@@ -19,5 +19,7 @@ namespace SWTlib.Models
         public IEnumerable<Keyword> KeywordList { get; set; }
         public IEnumerable<BookKeyword> BookKeywordList { get; set; }
 
+        public IEnumerable<Location> LocationList { get; set; }
+
     }
 }

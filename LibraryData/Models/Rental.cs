@@ -9,6 +9,9 @@ namespace LibraryData.Models
     public class Rental
     {
         public int Id { get; set; }
+
+
+        private DateTime? rentalDate = null;
         [Required]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}",
                ApplyFormatInEditMode = true)]
@@ -24,16 +27,20 @@ namespace LibraryData.Models
             set { this.rentalDate = value; }
         }
 
-        private DateTime? rentalDate = null;
+
+
         [Required]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}",
                ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         public DateTime ReturnDate { get; set; }
 
+        public bool ExtendedRental { get; set; }
+
         public int BookId { get; set; }
         public Book Book { get; set; }
 
+        //public int CustomerId { get; set; }
         //public Customer Customer { get; set; }
     }
 }

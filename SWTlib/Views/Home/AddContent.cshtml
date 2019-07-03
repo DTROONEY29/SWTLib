@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "ADD CONTENT";
+}
+
+<!-- Breadcrumb Navigation-->
+<ul class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item active">Add Content</li>
+</ul>
+
+
+<!-- Main Content -->
+<div class="card-deck">
+    <div class="card">
+        <img class="card-img-top" src="~/img/AddBook.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <a asp-area="" asp-controller="Book" asp-action="Create">  <h5 class="card-title">Add Book</h5> </a>
+            <p class="card-text">Add a book to the database.</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">2 New titles</small>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top" src="~/img/catImage2.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <a asp-area="" asp-controller="Category" asp-action="Create"> <h5 class="card-title">Add Category</h5> </a>
+            <p class="card-text">Add a new category to the database.</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">No new titles</small>
+        </div>
+    </div>
+    <div class="card">
+        <img class="card-img-top" src="~/img/catImage3.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <a asp-area="" asp-controller="Location" asp-action="Create">
+                <h5 class="card-title">Add Room</h5>
+            </a>
+            <p class="card-text">Add a new location to the database.</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">1 new title</small>
+        </div>
+    </div>
+</div>

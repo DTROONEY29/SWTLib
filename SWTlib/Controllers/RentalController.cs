@@ -1,29 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryData;
 using LibraryData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SWTlib.Models;
+using SWTlib.Models.Helpers;
 using SWTlib.Models.ViewModels;
 
 namespace SWTlib.Controllers
 {
     public class RentalController : Controller
     {
-        private LibraryContext _context;
+        private readonly LibraryContext _context;
         public RentalController(LibraryContext context)
         {
             _context = context;
         }
+
+        private void ReturnDateDropDown(object selectedDate = null)
+        {
+            var returnDates = new List<ReturnDateHelper>();
+            returnDates.Add( new ReturnDateHelper
+            {
+                Duration = "1 Week",
+                ReturnDate = DateTime.Now.AddDays(7)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "2 Weeks",
+                ReturnDate = DateTime.Now.AddDays(14)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "3 Weeks",
+                ReturnDate = DateTime.Now.AddDays(21)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "4 Weeks",
+                ReturnDate = DateTime.Now.AddMonths(1)
+            });
+
+
+            var dateQuery = from d in returnDates
+                            orderby d.Duration
+                            select d;
+            ViewBag.ReturnDate = new SelectList(dateQuery, "ReturnDate", "Duration", selectedDate);
+        }
+
+        private void ExtendReturnDateDropDown(int? RentalId, object selectedDate = null)
+        {
+            Rental rental = _context.Rentals.Where(r => r.Id == RentalId.Value).Single();
+            var lastDate = rental.ReturnDate;
+
+            var returnDates = new List<ReturnDateHelper>();
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "1 Week",
+                ReturnDate = lastDate.AddDays(7)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "2 Weeks",
+                ReturnDate = lastDate.AddDays(14)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "3 Weeks",
+                ReturnDate = lastDate.AddDays(21)
+            });
+            returnDates.Add(new ReturnDateHelper
+            {
+                Duration = "4 Weeks",
+                ReturnDate = lastDate.AddMonths(1)
+            });
+
+
+            var dateQuery = from d in returnDates
+                            orderby d.Duration
+                            select d;
+            ViewBag.ReturnDate = new SelectList(dateQuery, "ReturnDate", "Duration", selectedDate);
+        }
+
         // GET: Rental
         public ActionResult Index(int? id, int? BookId )
         {
-            var viewModel = new RentalViewModel();
-            viewModel.RentalList = _context.Rentals
+            var viewModel = new RentalViewModel
+            {
+                RentalList = _context.Rentals
                 .Include(i => i.Book)
                 .Include(i => i.Book.BookAuthors)
                     .ThenInclude(i => i.Author)
@@ -33,7 +103,8 @@ namespace SWTlib.Controllers
                     .ThenInclude(i => i.Keyword)
                 .AsNoTracking()
                 .OrderBy(i => i.ReturnDate)
-                .ToList();
+                .ToList()
+            };
 
             if (id != null)
             {
@@ -67,16 +138,18 @@ namespace SWTlib.Controllers
             }
 
             var book = _context.Books.Find(id);
+
             if (book == null)
             {
                 return NotFound();
             }
 
-            var returnDate = DateTime.Today;
-            returnDate.AddDays(14);
-
-            var createRental = new Rental { BookId = book.Id, RentalDate = DateTime.Now, ReturnDate = returnDate, Book = book };
+            var createRental = new Rental();
+            createRental.BookId = book.Id;
+            createRental.Book = book;
+                     
             //ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name");
+            ReturnDateDropDown();
             return View(createRental);
         }
 
@@ -85,15 +158,20 @@ namespace SWTlib.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind("RentalId,BookId,RentalDate,ReturnDate")] Rental createRental)
         {
+            
             if (ModelState.IsValid)
-            {
+            {                
                 _context.Rentals.Add(createRental);
                 _context.SaveChanges();
+
+                var book = _context.Books.Find(createRental.BookId);
+                book.Status = true;
+                _context.SaveChanges();
+
                 return RedirectToAction("Index", "Rental");
             }
 
             //ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", borrowHistory.CustomerId);
-            createRental.Book = _context.Books.Find(createRental.BookId);
             return View(createRental);
         }
 
@@ -117,6 +195,7 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
+            ExtendReturnDateDropDown(id);
             return View(rental);
         }
 
@@ -137,7 +216,8 @@ namespace SWTlib.Controllers
             {
                 try
                 {
-                    await _context.SaveChangesAsync();
+                    rentalToUpdate.ExtendedRental = true;
+                    await _context.SaveChangesAsync();                    
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException /* ex */)
@@ -163,6 +243,7 @@ namespace SWTlib.Controllers
                 .Include(i => i.Book)
                 .AsNoTracking()
                 .FirstOrDefault(m => m.Id == id);
+
             if (rental == null)
             {
                 return NotFound();
@@ -184,6 +265,7 @@ namespace SWTlib.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var rental = await _context.Rentals.FindAsync(id);
+
             if (rental == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -193,13 +275,20 @@ namespace SWTlib.Controllers
             {
                 _context.Rentals.Remove(rental);
                 await _context.SaveChangesAsync();
+
+                var book = _context.Books.Find(rental.BookId);
+                book.Status = false;
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new { id, saveChangesError = true });
             }
         }
+
+        
     }
 }

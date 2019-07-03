@@ -9,6 +9,7 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -18,30 +19,32 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.css">
+    <link rel="stylesheet" href="~/lib/chosen/chosen.css" />
+
 </head>
-<body>
+<body>    
     <header>
         @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SWTlib</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                      
-                    </ul>
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SWTlib</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>*@
+            </nav>*@
         <nav class="navbar navbar-light bg-swt-secondary border-bottom box-shadow mb-3">
             <div class="d-flex flex-row justify-content-center w-100">
                 <div class="w-25 align-self-center justify-content-center">
@@ -62,42 +65,18 @@
                     <div class="col text-center align-self-center">
                         <a href="#">
                             <img src="/img/UserButton.png" width="48" height="48" alt="User" asp-append-version="true" />
-                        </a>                        
+                        </a>
                     </div>
                     <div class="col"></div>
                 </div>
             </div>
         </nav>
-        <script>
-            $(document).ready(function () {
-                $('[data-toggle="popover"]').popover({
-                    title: setData,
-                    html: true,
-                    placement: 'bottom'
-                });
-                function setData(id) {
-                    var set_data = '';
-                    var element = $(this);
-                    var id = element.attr("id");
-                    $.ajax({
-                        url: "/Home/Book?Id" + id,
-                        method: "post",
-                        async: false,
-                        data: { id: id },
-                        success: function (data) {
-                            set_data = data;
-                        }
-                    });
-                    return set_data;
-                }
-            });
-        </script>
 
     </header>
-    <body>
+    <div>
         <div class="container-fluid">
             <div class="row ml-4 mr-4 sidenav">
-                <div class="col col-lg-2 bg-swt-primary">
+                <div class="col col-lg-2 bg-swt-primary box-shadow">
                     <ul class="nav flex-column bg-swt display-5">
                         <li class="nav-item text-center">
                             <a class="nav-link text-swt-primary" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
@@ -114,29 +93,35 @@
                         <li class="nav-item text-center">
                             <a class="nav-link text-swt-primary" href="#">Statistics</a>
                         </li>
+                        <li class="nav-item text-center">
+                            <a class="nav-link text-swt-primary" asp-controller="Home" asp-action="AddContent">Add Content</a>
+                        </li>
                     </ul>
                 </div>
-                <div class="col">
+                <div class="col testwrapper">
                     <div class="container h-100">
                         <partial name="_CookieConsentPartial" />
+
                         <main role="main" class="pb-3 h-100">
+                            <partial name="_BusyIndicatorPartial" />                           
                             @RenderBody()
                         </main>
                     </div>
                 </div>
-                <div class="col col-lg-2 bg-swt-secondary">
+                <div class="col col-lg-2 bg-swt-secondary box-shadow">
                     <div class="text-center">
                         <h3>Placeholder</h3>
                     </div>
                 </div>
             </div>
         </div>
-        
-    </body>
-    
+
+    </div>
+
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/chosen/chosen.jquery.js" asp-append-version="true"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     </environment>
     <environment exclude="Development">
@@ -146,6 +131,7 @@
                 crossorigin="anonymous"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
         </script>
+        <script src="~/js/chosen.jquery.min.js" asp-append-version="true"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
@@ -154,6 +140,7 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
 
     @RenderSection("Scripts", required: false)
 </body>

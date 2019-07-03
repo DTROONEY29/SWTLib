@@ -36,7 +36,7 @@ namespace SWTlib.Controllers
         {
             try
             {
-                //_context.BookAuthors.Add(author);
+                _context.Authors.Add(author);
                 _context.SaveChanges();
                
 

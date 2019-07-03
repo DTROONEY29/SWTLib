@@ -29,6 +29,14 @@ namespace LibraryData
 
             modelBuilder.Entity<BookKeyword>()
                 .HasKey(c => new { c.BookId, c.KeywordId });
+
+            modelBuilder.Entity<Book>()
+                .Property(s => s.Status)
+                .HasDefaultValue(false);
+
+            modelBuilder.Entity<Rental>()
+                .Property(s => s.ExtendedRental)
+                .HasDefaultValue(false);
         }
     }
 }

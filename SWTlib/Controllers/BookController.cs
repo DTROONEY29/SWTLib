@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryData;
 using LibraryData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SWTlib.Models;
 using SWTlib.Models.ViewModels;
 
 namespace SWTlib.Controllers
@@ -22,17 +21,20 @@ namespace SWTlib.Controllers
         // GET: Book
         public ActionResult Index(int? id)
         {
-            var viewModel = new BookAuthorViewModel();
-            viewModel.BookList = _context.Books
+            var viewModel = new BookAuthorViewModel
+            {
+                BookList = _context.Books
                 .Include(i => i.BookAuthors)
                     .ThenInclude(i => i.Author)
                 .Include(i => i.BookCategories)
                     .ThenInclude(i => i.Category)
                 .Include(i => i.BookKeywords)
                     .ThenInclude(i => i.Keyword)
+                .Include(i => i.Bookmarks)
                 .AsNoTracking()
                 .OrderBy(i => i.Title)
-                .ToList();
+                .ToList()
+            };
 
             if (id != null)
             {
@@ -56,7 +58,7 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Books
+            var book = await _context.Books
                 .Include(i => i.Location)
                 .Include(i => i.BookAuthors)
                     .ThenInclude(i => i.Author)
@@ -65,107 +67,207 @@ namespace SWTlib.Controllers
                 .Include(i => i.BookKeywords)
                     .ThenInclude(i => i.Keyword)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            if (book == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(book);
         }
 
-        // GET: Book/Create
-        public ActionResult Create()
+        private void LocationDropDownList(object selectedLocation = null)
         {
-            var itemA = _context.BookAuthors.ToList();
-            var itemC = _context.Categories.ToList();
-            var itemK = _context.Keywords.ToList();
+            var locationsQuery = from l in _context.Locations
+                                 orderby l.LocationName
+                                 select l;
+            ViewBag.Id = new SelectList(locationsQuery.AsNoTracking(), "Id", "LocationName", selectedLocation);
+        }
 
-            BookAuthorViewModel bookAuthorViewModel = new BookAuthorViewModel();
-            bookAuthorViewModel.AuthorList = itemA.Select(a => new Author()
+        private void PopulateJoinTableData(Book book)
+        {
+            var allAuthors = _context.Authors;
+            var allCategories = _context.Categories;
+            var allKeywords = _context.Keywords;
+
+            var bAuthors = new HashSet<int>(book.BookAuthors.Select(a => a.AuthorId));
+            var bCategories = new HashSet<int>(book.BookCategories.Select(a => a.CategoryId));
+            var bKeywords = new HashSet<int>(book.BookKeywords.Select(a => a.KeywordId));
+
+            var authorViewModel = new List<JoinTableDataViewModel>();
+            var categoryViewModel = new List<JoinTableDataViewModel>();
+            var keywordViewModel = new List<JoinTableDataViewModel>();        
+
+            //Authors
+            foreach (var author in allAuthors)
             {
-               // Id = a.Id,
-              //  AuthorName = a.AuthorName
-            }).ToList();
-
-            bookAuthorViewModel.CategoryList = itemC.Select(a => new Category()
+                authorViewModel.Add(new JoinTableDataViewModel
+                {
+                    AuthorId = author.Id,
+                    AuthorName = author.AuthorName,
+                    AAssigned = bAuthors.Contains(author.Id)
+                });
+            }
+            //Categories
+            foreach (var category in allCategories)
             {
-                Id = a.Id,
-                CategoryName = a.CategoryName
-            }).ToList();
-
-            bookAuthorViewModel.KeywordList = itemK.Select(a => new Keyword()
+                categoryViewModel.Add(new JoinTableDataViewModel
+                {
+                    CategoryId = category.Id,
+                    CategoryName = category.CategoryName,
+                    CAssigned = bCategories.Contains(category.Id)
+                });
+            }
+            //Keywords
+            foreach (var keyword in allKeywords)
             {
-                Id = a.Id,
-                KeywordName = a.KeywordName
-            }).ToList();
+                keywordViewModel.Add(new JoinTableDataViewModel
+                {
+                    KeywordId = keyword.Id,
+                    KeywordName = keyword.KeywordName,
+                    KAssigned = bKeywords.Contains(keyword.Id)
+                });
+            }
 
-            return View(bookAuthorViewModel);
+            ViewData["Authors"] = authorViewModel;
+            ViewData["Categories"] = categoryViewModel;
+            ViewData["Keywords"] = keywordViewModel;
+
+            
+        }
+              
+
+        // GET: Book/Create
+        public IActionResult Create()
+        {
+            var book = new Book();
+            book.BookAuthors = new List<BookAuthor>();
+            book.BookCategories = new List<BookCategory>();
+            book.BookKeywords = new List<BookKeyword>();
+
+            LocationDropDownList();
+            
+            var authors = _context.Authors.Select(c => new {
+                AuthorId = c.Id,
+                AuthorName = c.AuthorName
+            }).ToList();
+            ViewBag.Authors = new MultiSelectList(authors, "AuthorId", "AuthorName");
+
+            var categories = _context.Categories.Select(c => new
+            {
+                CategoryId = c.Id,
+                CategoryName = c.CategoryName
+            }).ToList();
+            ViewBag.Categories = new MultiSelectList(categories, "CategoryId", "CategoryName");
+            
+            var keywrd = _context.Keywords.Select(c => new
+            {
+                KeywordId = c.Id,
+                KeywordName = c.KeywordName
+            }).ToList();
+            ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");/**/
+
+            return View();            
         }
 
         // POST: Book/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(BookAuthorViewModel BAVM, Book books)
+        public async Task<ActionResult> Create([Bind("Title,ISBN,Publisher,Year,Description,Language,LocationId,")] Book book, string[] selectedAuthors, string[] selectedCategories, string[] selectedKeywords)
         {
-            try
+            
+            if (selectedAuthors != null)
             {
-                List<BookAuthor> ba = new List<BookAuthor>();
-                List<BookCategory> bc = new List<BookCategory>();
-                List<BookKeyword> bk = new List<BookKeyword>();
+                //Create a new List<int> to store the AuthorId's.
+                var authorsList = new List<int>();
 
-                books.Title = BAVM.Title;
-                books.ISBN = BAVM.ISBN;
-                books.Publisher = BAVM.Publisher;
-                books.Year = BAVM.Year;
-                books.Description = BAVM.Description;
-                books.Language = BAVM.Language;
-                books.Status = BAVM.Status;
-                _context.Books.Add(books);
-                _context.SaveChanges();
-                int bookId = books.Id;
-
-                //Authors
-                foreach (var item in BAVM.AuthorList)
+                foreach (var item in selectedAuthors)
                 {
-                    ba.Add(new BookAuthor() { BookId = bookId, AuthorId = item.Id });                  
+                    bool isInt = int.TryParse(item, out int n);     //Try to parse the string item from selectedAuthors to int and return a bool.
+                    if (isInt == true)
+                    {
+                        authorsList.Add(int.Parse(item));           //If success: add item to authorsList.
+                    }
+
+                    if (isInt == false)                             //If false: create a new author and add it to the database.
+                    {
+                        var newAuthor = new Author { AuthorName = item };
+                        _context.Authors.Add(newAuthor);
+                        await _context.SaveChangesAsync();
+
+                        var newAuthorId = _context.Authors.Find(newAuthor.Id);      //Get the Id of the created author and add it to authorsList.
+                        authorsList.Add(newAuthorId.Id);
+                    }
                 }
 
-                foreach (var item in ba)
+                book.BookAuthors = new List<BookAuthor>();
+                //Add Book and Author to Join-Table
+                foreach (var author in authorsList)
                 {
-                    _context.BookAuthors.Add(item);
-                }
-                _context.SaveChanges();
-
-                //Categories
-                foreach (var item in BAVM.CategoryList)
-                {
-                    bc.Add(new BookCategory() { BookId = bookId, CategoryId = item.Id });
-                }
-
-                foreach (var item in bc)
-                {
-                    _context.BookCategories.Add(item);
-                }
-                _context.SaveChanges();
-
-                //Keywords
-                foreach (var item in BAVM.KeywordList)
-                {
-                    bk.Add(new BookKeyword() { BookId = bookId, KeywordId = item.Id });
-                }
-
-                foreach (var item in bk)
-                {
-                    _context.BookKeywords.Add(item);
-                }
-                _context.SaveChanges();
-
-                return RedirectToAction("Index", "Book");
+                    var authorToAdd = new BookAuthor { BookId = book.Id, AuthorId = author };
+                    book.BookAuthors.Add(authorToAdd);
+                }           
             }
-            catch
+
+            if (selectedCategories != null)
+            {
+                book.BookCategories = new List<BookCategory>();
+                //Add Book and Category to Join-Table
+                foreach (var category in selectedCategories)
+                {
+                    var categoryToAdd = new BookCategory { BookId = book.Id, CategoryId = int.Parse(category) };
+                    book.BookCategories.Add(categoryToAdd);
+                }
+            }
+
+            if (selectedKeywords != null)
+            {
+                //Create a new List<int> to store the KeywordId's.
+                var keywordsList = new List<int>();
+
+                foreach (var item in selectedKeywords)
+                {
+                    bool isInt = int.TryParse(item, out int n);     //Try to parse the string item from selectedKeywords to int and return a bool.
+                    if (isInt == true)
+                    {
+                        keywordsList.Add(int.Parse(item));           //If success: add item to keywordsList.
+                    }
+
+                    if (isInt == false)                             //If false: create a new keyword and add it to the database.
+                    {
+                        var newKeyword = new Keyword { KeywordName = item };
+                        _context.Keywords.Add(newKeyword);
+                        await _context.SaveChangesAsync();
+
+                        var newKeywordId = _context.Authors.Find(newKeyword.Id);      //Get the Id of the created keyword and add it to keywordsList.
+                        keywordsList.Add(newKeywordId.Id);
+                    }
+                }
+
+                book.BookKeywords = new List<BookKeyword>();
+                //Add Book and Keyword to Join-Table
+                foreach (var keyword in selectedKeywords)
+                {
+                    var keywordToAdd = new BookKeyword { BookId = book.Id, KeywordId = int.Parse(keyword) };
+                    book.BookKeywords.Add(keywordToAdd);
+                }
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
             {
                 return View();
             }
+
+            LocationDropDownList(book.LocationId);
+
+            return View(book);
         }
 
         // GET: Book/Edit/5
@@ -192,26 +294,90 @@ namespace SWTlib.Controllers
         }
 
         // GET: Book/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var book = await _context.Books.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }           
+
+            return View(book);
         }
 
         // POST: Book/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));                
             }
             catch
             {
                 return View();
             }
         }
-    }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddDown(int? id)
+        {
+            var book = _context.Books.FirstOrDefault(s => s.Id == id);
+
+            try
+            {
+                book.RatingDown += 1;
+                _context.SaveChanges();
+                return RedirectToAction("Details", "Book", new { Id = id });
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+                throw;
+            }
+        }
+
+        // Rating Logic
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddUp(int? id)
+        {  
+            var book = _context.Books.FirstOrDefault(s => s.Id == id);
+            
+                try
+                {
+                    book.RatingUp += 1;
+                    _context.SaveChanges();
+                return RedirectToAction("Details", "Book", new { Id = id });
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                throw;
+                }
+            }            
+        }
 }

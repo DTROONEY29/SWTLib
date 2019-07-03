@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20190617181551_Initial 1.6")]
-    partial class Initial16
+    [Migration("20190630184734_Initial 2.4")]
+    partial class Initial24
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,7 +38,9 @@ namespace LibraryData.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("ISBN");
+                    b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Language");
 
@@ -46,12 +48,18 @@ namespace LibraryData.Migrations
 
                     b.Property<string>("Publisher");
 
-                    b.Property<bool>("Status");
+                    b.Property<int>("RatingDown");
+
+                    b.Property<int>("RatingUp");
+
+                    b.Property<bool>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.Property<int>("Year");
+                    b.Property<int?>("Year");
 
                     b.HasKey("Id");
 
@@ -99,6 +107,20 @@ namespace LibraryData.Migrations
                     b.ToTable("BookKeywords");
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BookId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Bookmark");
+                });
+
             modelBuilder.Entity("LibraryData.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -144,6 +166,10 @@ namespace LibraryData.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("BookId");
+
+                    b.Property<bool>("ExtendedRental")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("RentalDate");
 
@@ -201,6 +227,14 @@ namespace LibraryData.Migrations
                     b.HasOne("LibraryData.Models.Keyword", "Keyword")
                         .WithMany("BookKeywords")
                         .HasForeignKey("KeywordId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany("Bookmarks")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
