@@ -7,9 +7,9 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR /src
 Copy *.sln ./
-COPY ["SWTlib/SWTlib.csproj", "SWTlib/"]
-COPY ["SWTlib/LibraryContext.csproj", "LibraryContext/"]
-RUN dotnet restore
+COPY src/LibraryContext/LibraryContext.csproj
+COPY src/SWTlib/SWTlib.csproj
+RUN dotnet restore src/SWTlib/SWTlib.csproj
 COPY . .
 WORKDIR "/src/SWTlib"
 RUN dotnet build "SWTlib.csproj" -c Release -o /app
