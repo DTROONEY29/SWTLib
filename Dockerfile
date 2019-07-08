@@ -1,10 +1,10 @@
 # Build ASP.net core web app
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-nanoserver-1803 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-nanoserver-1803 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR /src
 Copy *.sln ./
 COPY ["SWTlib/SWTlib.csproj", "SWTlib/"]
