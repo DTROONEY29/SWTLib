@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace SWTlib
 {
@@ -30,6 +37,47 @@ namespace SWTlib
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "Gitlab";
+            })
+                .AddCookie()
+                .AddOAuth("Gitlab", options =>
+                {
+                    options.ClientId = "f74b5387c9b953c15cecf450ddef915b67c5282c5e6f81ff9efef1da1ba6bd59";
+                    options.ClientSecret = "018e55228c8a016fa51bff0d0ded71a7e06d45c33f6819cf01f01b8b71fe9907";
+
+                    options.CallbackPath = new PathString("/signin-gitlab");
+
+                    options.AuthorizationEndpoint = "https://gitlab.rz.uni-bamberg.de/oauth/authorize";
+                    options.TokenEndpoint = "https://gitlab.rz.uni-bamberg.de/oauth/token";
+                    options.UserInformationEndpoint = "https://gitlab.rz.uni-bamberg.de/api/v4/user";
+
+                    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                    options.ClaimActions.MapJsonKey("urn:gitlab:login", "login");
+                    options.ClaimActions.MapJsonKey("urn:gitlab:url", "html_url");
+                    options.ClaimActions.MapJsonKey("urn:gitlab:avatar", "avatar_url");
+
+                    options.Events = new OAuthEvents
+                    {
+                        OnCreatingTicket = async context =>
+                        {
+                            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
+                            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
+
+                            var response = await context.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.HttpContext.RequestAborted);
+                            response.EnsureSuccessStatusCode();
+
+                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                            context.RunClaimActions(user);
+                        }
+                    };
+                });
             services.AddSingleton(Configuration);
             services.AddDbContextPool<LibraryContext>(
                 options => options.UseMySql(Configuration.GetConnectionString("LibraryConnection")));
@@ -52,6 +100,7 @@ namespace SWTlib
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
