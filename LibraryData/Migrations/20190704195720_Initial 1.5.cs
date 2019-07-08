@@ -2,7 +2,7 @@
 
 namespace LibraryData.Migrations
 {
-    public partial class initial22 : Migration
+    public partial class Initial15 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

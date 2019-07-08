@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWTlib.Models.ViewModels
 {
-    public class JoinTableDataViewModel : ViewTestModel
+    public class JoinTableDataViewModel : ListViewModel
     {
         public int AuthorId { get; set; }
         public int CategoryId { get; set; }

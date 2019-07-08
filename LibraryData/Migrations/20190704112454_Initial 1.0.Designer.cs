@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20190629125743_initial 2.1")]
-    partial class initial21
+    [Migration("20190704112454_Initial 1.0")]
+    partial class Initial10
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,10 @@ namespace LibraryData.Migrations
                     b.Property<int>("LocationId");
 
                     b.Property<string>("Publisher");
+
+                    b.Property<int>("RatingDown");
+
+                    b.Property<int>("RatingUp");
 
                     b.Property<bool>("Status")
                         .ValueGeneratedOnAdd()
@@ -101,6 +105,20 @@ namespace LibraryData.Migrations
                     b.HasIndex("KeywordId");
 
                     b.ToTable("BookKeywords");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BookId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Bookmarks");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Category", b =>
@@ -209,6 +227,14 @@ namespace LibraryData.Migrations
                     b.HasOne("LibraryData.Models.Keyword", "Keyword")
                         .WithMany("BookKeywords")
                         .HasForeignKey("KeywordId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany("Bookmarks")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

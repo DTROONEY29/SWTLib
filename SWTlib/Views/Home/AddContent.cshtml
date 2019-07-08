@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "ADD CONTENT";
+    ViewData["Title"] = "MANAGE CONTENT";
 }
 
 <!-- Breadcrumb Navigation-->
@@ -13,35 +13,44 @@
 <!-- Main Content -->
 <div class="card-deck">
     <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Book</h3></div>
         <img class="card-img-top" src="~/img/AddBook.jpg" width="259" height="174" alt="Card image cap">
         <div class="card-body">
-            <a asp-area="" asp-controller="Book" asp-action="Create">  <h5 class="card-title">Add Book</h5> </a>
-            <p class="card-text">Add a book to the database.</p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">2 New titles</small>
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Book" asp-action="Create">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>
+                <div><a asp-area="" asp-controller="Book" asp-action="Edit">  <h5 class="card-title">Edit</h5> </a></div>
+                <div>|</div>
+                <div><a asp-area="" asp-controller="Book" asp-action="Delete">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage books in the database.</p>
         </div>
     </div>
     <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Category</h3></div>
         <img class="card-img-top" src="~/img/catImage2.jpg" width="259" height="174" alt="Card image cap">
         <div class="card-body">
-            <a asp-area="" asp-controller="Category" asp-action="Create"> <h5 class="card-title">Add Category</h5> </a>
-            <p class="card-text">Add a new category to the database.</p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">No new titles</small>
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Category" asp-action="Create">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>                
+                <div><a asp-area="" asp-controller="Category" asp-action="Delete">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage categories in the database.</p>
         </div>
     </div>
     <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Room</h3></div>
         <img class="card-img-top" src="~/img/catImage3.jpg" width="259" height="174" alt="Card image cap">
         <div class="card-body">
-            <a asp-area="" asp-controller="Location" asp-action="Create">
-                <h5 class="card-title">Add Room</h5>
-            </a>
-            <p class="card-text">Add a new location to the database.</p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">1 new title</small>
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Home" asp-action="AddRoom">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>                
+                <div><a asp-area="" asp-controller="Home" asp-action="DeleteRoom">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage rooms in the database.</p>
         </div>
     </div>
 </div>

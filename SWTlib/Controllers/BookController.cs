@@ -21,7 +21,7 @@ namespace SWTlib.Controllers
         // GET: Book
         public ActionResult Index(int? id)
         {
-            var viewModel = new BookAuthorViewModel
+            var viewModel = new BookViewModel
             {
                 BookList = _context.Books
                 .Include(i => i.BookAuthors)
@@ -30,9 +30,11 @@ namespace SWTlib.Controllers
                     .ThenInclude(i => i.Category)
                 .Include(i => i.BookKeywords)
                     .ThenInclude(i => i.Keyword)
-                .Include(i => i.Bookmarks)
                 .AsNoTracking()
                 .OrderBy(i => i.Title)
+                .ToList(),
+
+                BookmarkList = _context.Bookmarks
                 .ToList()
             };
 
@@ -67,12 +69,21 @@ namespace SWTlib.Controllers
                 .Include(i => i.BookKeywords)
                     .ThenInclude(i => i.Keyword)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (book == null)
             {
                 return NotFound();
             }
+            CheckRating();
 
             return View(book);
+        }
+
+        public void CheckRating()
+        {
+            var allRatings = _context.Ratings.ToList();
+
+            ViewBag.Ratings = allRatings;
         }
 
         private void LocationDropDownList(object selectedLocation = null)
@@ -139,30 +150,32 @@ namespace SWTlib.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
-            var book = new Book();
-            book.BookAuthors = new List<BookAuthor>();
-            book.BookCategories = new List<BookCategory>();
-            book.BookKeywords = new List<BookKeyword>();
+            var book = new Book
+            {
+                BookAuthors = new List<BookAuthor>(),
+                BookCategories = new List<BookCategory>(),
+                BookKeywords = new List<BookKeyword>()
+            };
 
             LocationDropDownList();
             
             var authors = _context.Authors.Select(c => new {
                 AuthorId = c.Id,
-                AuthorName = c.AuthorName
+                c.AuthorName
             }).ToList();
             ViewBag.Authors = new MultiSelectList(authors, "AuthorId", "AuthorName");
 
             var categories = _context.Categories.Select(c => new
             {
                 CategoryId = c.Id,
-                CategoryName = c.CategoryName
+                c.CategoryName
             }).ToList();
             ViewBag.Categories = new MultiSelectList(categories, "CategoryId", "CategoryName");
             
             var keywrd = _context.Keywords.Select(c => new
             {
                 KeywordId = c.Id,
-                KeywordName = c.KeywordName
+                c.KeywordName
             }).ToList();
             ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");/**/
 
@@ -238,16 +251,16 @@ namespace SWTlib.Controllers
                         _context.Keywords.Add(newKeyword);
                         await _context.SaveChangesAsync();
 
-                        var newKeywordId = _context.Authors.Find(newKeyword.Id);      //Get the Id of the created keyword and add it to keywordsList.
+                        var newKeywordId = _context.Keywords.Find(newKeyword.Id);      //Get the Id of the created keyword and add it to keywordsList.
                         keywordsList.Add(newKeywordId.Id);
                     }
                 }
 
                 book.BookKeywords = new List<BookKeyword>();
                 //Add Book and Keyword to Join-Table
-                foreach (var keyword in selectedKeywords)
+                foreach (var keyword in keywordsList)
                 {
-                    var keywordToAdd = new BookKeyword { BookId = book.Id, KeywordId = int.Parse(keyword) };
+                    var keywordToAdd = new BookKeyword { BookId = book.Id, KeywordId = keyword };
                     book.BookKeywords.Add(keywordToAdd);
                 }
             }
@@ -271,16 +284,18 @@ namespace SWTlib.Controllers
         }
 
         // GET: Book/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        public ActionResult Edit(int id) => View();
 
         // POST: Book/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
+            if (collection == null)
+            {
+                throw new System.ArgumentNullException(nameof(collection));
+            }
+
             try
             {
                 // TODO: Add update logic here
@@ -317,6 +332,11 @@ namespace SWTlib.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
+            if (collection == null)
+            {
+                throw new System.ArgumentNullException(nameof(collection));
+            }
+
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
@@ -335,17 +355,25 @@ namespace SWTlib.Controllers
             }
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddDown(int? id)
+        public IActionResult AddDown(int userid, int bookid)
         {
-            var book = _context.Books.FirstOrDefault(s => s.Id == id);
+            var book = _context.Books.FirstOrDefault(s => s.Id == bookid);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userid);
+            var rating = new Rating
+            {
+                BookId = book.Id,
+                UserId = user.Id
+            };
 
             try
             {
+                _context.Ratings.Add(rating);
                 book.RatingDown += 1;
                 _context.SaveChanges();
-                return RedirectToAction("Details", "Book", new { Id = id });
+                return RedirectToAction("Details", "Book", new { Id = bookid });
             }
             catch (DbUpdateException /* ex */)
             {

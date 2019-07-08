@@ -20,7 +20,7 @@ namespace SWTlib.Controllers
 
         public ActionResult Index(int? id)
         {
-            var viewModel = new BookAuthorViewModel
+            var viewModel = new BookViewModel
             {
                 CategoryList = _context.Categories
                 .Include(i => i.BookCategories)
@@ -61,5 +61,61 @@ namespace SWTlib.Controllers
 
             return View(cat);
         }
+
+        // GET: Category/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Category/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Category category)
+        {
+            try
+            {
+                var cat = new Category
+                {
+                    CategoryName = category.CategoryName
+                };
+
+                _context.Categories.Add(category);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Category/Delete
+        public ActionResult Delete()
+        {
+            var cat = _context.Categories.ToList();
+            return View(cat);
+        }
+
+        // POST: Category/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                var cat = _context.Categories.Find(id);
+                _context.Categories.Remove(cat);
+                _context.SaveChanges();
+
+                return RedirectToAction("Delete", "Category");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
     }
 }

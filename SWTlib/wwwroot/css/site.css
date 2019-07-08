@@ -116,6 +116,7 @@ a.clean-link {
     }
 }
 
+/* Buttons */
 .swt-button {
     background-color: #00457d;
     color: white;
@@ -158,6 +159,9 @@ input.swt-button {
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
+.btn-rating:focus {
+    outline: none;
+}
 
 /* Dashboard */
 .form-container {
@@ -198,6 +202,7 @@ input.swt-button {
     border-radius: 0px 5px 5px 0px !important;
 }
 
+/* Rating System */
 .thumb-green {
     color: green;
 }
@@ -244,4 +249,20 @@ input.swt-button {
 
 .testwrapper {
     position: relative;
+}
+
+/* Bookmarks */
+.bm-yellow {
+    color: darkgoldenrod;
+}
+
+bm-hover:hover .fa-bookmark:before {
+    font-weight: bolder;
+    z-index: 200;
+}
+
+bm-delete:hover .fa-window-close:before {
+    color: darkred !important;
+    background-color: white !important;
+    z-index: 200;
 }

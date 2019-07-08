@@ -23,7 +23,7 @@ namespace SWTlib.Controllers
         {
             try
             {
-                var viewModel = new BookAuthorViewModel
+                var viewModel = new BookViewModel
                 {
                     CategoryList = _context.Categories
                     .Include(i => i.BookCategories)
@@ -80,6 +80,56 @@ namespace SWTlib.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        // GET: Location/Create
+        public ActionResult AddRoom()
+        {
+            return View();
+        }
+
+        // POST: Location/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddRoom(Location location)
+        {
+            try
+            {
+                _context.Locations.Add(location);
+                _context.SaveChanges();
+
+                return RedirectToAction("AddContent", "Home");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Location/Delete
+        public ActionResult DeleteRoom()
+        {
+            var room = _context.Locations.ToList();
+            return View(room);
+        }
+
+        // POST: Location/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteRoom(int id)
+        {
+            try
+            {
+                var location = _context.Locations.Find(id);
+                _context.Locations.Remove(location);
+                _context.SaveChanges();
+
+                return RedirectToAction("DeleteRoom", "Home");
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }

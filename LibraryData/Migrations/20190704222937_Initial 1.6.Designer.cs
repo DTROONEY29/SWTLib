@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20190630184734_Initial 2.4")]
-    partial class Initial24
+    [Migration("20190704222937_Initial 1.6")]
+    partial class Initial16
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,16 +109,15 @@ namespace LibraryData.Migrations
 
             modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("UserId");
 
                     b.Property<int>("BookId");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Bookmark");
+                    b.ToTable("Bookmarks");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Category", b =>
@@ -160,6 +159,17 @@ namespace LibraryData.Migrations
                     b.ToTable("Locations");
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("BookId");
+
+                    b.HasKey("UserId", "BookId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
                 {
                     b.Property<int>("Id")
@@ -175,12 +185,34 @@ namespace LibraryData.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
+                    b.Property<int?>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Rentals");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<bool>("IsChairMember");
+
+                    b.Property<string>("LastName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Book", b =>
@@ -236,6 +268,11 @@ namespace LibraryData.Migrations
                         .WithMany("Bookmarks")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany("Bookmarks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
@@ -244,6 +281,10 @@ namespace LibraryData.Migrations
                         .WithOne("Rental")
                         .HasForeignKey("LibraryData.Models.Rental", "BookId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User")
+                        .WithMany("Rentals")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

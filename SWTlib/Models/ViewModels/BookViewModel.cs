@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWTlib.Models.ViewModels
 {
-    public class BookAuthorViewModel : ViewTestModel
+    public class BookViewModel : ListViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

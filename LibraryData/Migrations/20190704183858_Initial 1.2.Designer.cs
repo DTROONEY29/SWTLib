@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20190629134514_initial 2.2")]
-    partial class initial22
+    [Migration("20190704183858_Initial 1.2")]
+    partial class Initial12
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,10 @@ namespace LibraryData.Migrations
                     b.Property<int>("LocationId");
 
                     b.Property<string>("Publisher");
+
+                    b.Property<int>("RatingDown");
+
+                    b.Property<int>("RatingUp");
 
                     b.Property<bool>("Status")
                         .ValueGeneratedOnAdd()
@@ -105,16 +109,15 @@ namespace LibraryData.Migrations
 
             modelBuilder.Entity("LibraryData.Models.Bookmark", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("UserId");
 
                     b.Property<int>("BookId");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Bookmark");
+                    b.ToTable("Bookmarks");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Category", b =>
@@ -156,6 +159,19 @@ namespace LibraryData.Migrations
                     b.ToTable("Locations");
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("BookId");
+
+                    b.HasKey("UserId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
                 {
                     b.Property<int>("Id")
@@ -171,12 +187,34 @@ namespace LibraryData.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
+                    b.Property<int?>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Rentals");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<bool>("IsChairMember");
+
+                    b.Property<string>("LastName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Book", b =>
@@ -232,6 +270,24 @@ namespace LibraryData.Migrations
                         .WithMany("Bookmarks")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany("Bookmarks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
@@ -240,6 +296,10 @@ namespace LibraryData.Migrations
                         .WithOne("Rental")
                         .HasForeignKey("LibraryData.Models.Rental", "BookId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User")
+                        .WithMany("Rentals")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

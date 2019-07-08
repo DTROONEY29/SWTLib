@@ -3,14 +3,16 @@ using System;
 using LibraryData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20190704140236_Initial 1.1")]
+    partial class Initial11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,17 +159,6 @@ namespace LibraryData.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("LibraryData.Models.Rating", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("BookId");
-
-                    b.HasKey("UserId", "BookId");
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
                 {
                     b.Property<int>("Id")
@@ -210,7 +201,7 @@ namespace LibraryData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Book", b =>

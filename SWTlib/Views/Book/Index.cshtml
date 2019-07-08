@@ -1,4 +1,4 @@
-﻿@model SWTlib.Models.ViewModels.BookAuthorViewModel
+﻿@model SWTlib.Models.ViewModels.BookViewModel
 
 @{
     ViewData["Title"] = "BOOK COLLECTION";
@@ -38,16 +38,30 @@
                                         </div>
                                         <div class="d-flex align-self-center justify-content-end w-100">
                                             <div class="d-flex mr-4">
-                                                @{
-                                                    if (false)
+                                                @{  
+                                                    
+                                                    if (Model.BookmarkList.Any(x => x.BookId.Equals(item.Id)))
                                                     {
-                                                        <i class="fas fa-bookmark fa-lg"></i>
+                                                        <form asp-action="DeleteBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="">
+                                                            <div class="bm-hover">
+                                                                <button type="submit" class="bg-transparent border-0 btn-rating">
+                                                                    <i class="fas fa-bookmark fa-2x bm-yellow"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>                                                        
                                                     }
                                                     else
                                                     {
-                                                        <i class="far fa-bookmark fa-lg"></i>
+                                                        <form asp-action="SetBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="">
+                                                            <div class="bm-hover">
+                                                                <button type="submit" class="bg-transparent border-0 btn-rating">
+                                                                    <i class="far fa-bookmark fa-2x bm-yellow"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>
                                                     }
                                                 }
+
                                             </div>
                                         </div>
                                     </div>

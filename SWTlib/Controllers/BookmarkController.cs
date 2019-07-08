@@ -2,87 +2,96 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryData;
+using LibraryData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SWTlib.Models.ViewModels;
 
 namespace SWTlib.Controllers
 {
     public class BookmarkController : Controller
     {
+        private readonly LibraryContext _context;
+        public BookmarkController(LibraryContext context)
+        {
+            _context = context;
+        }
+
         // GET: Bookmark
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
-            return View();
+            var viewModel = new BookmarkViewModel
+            {
+                BookmarkList = _context.Bookmarks
+                .Include(i => i.Book)
+                .Include(i => i.Book.BookAuthors)
+                .ThenInclude(i => i.Author)
+                .Include(i => i.Book.BookCategories)
+                    .ThenInclude(i => i.Category)
+                .Include(i => i.Book.BookKeywords)
+                    .ThenInclude(i => i.Keyword)
+                .AsNoTracking()
+                .OrderBy(i => i.Book.Title)
+                .ToList()
+            };
+
+            if (id != null)
+            {
+                ViewData["BookmarkId"] = id.Value;
+                Bookmark bookmark = viewModel.BookmarkList.Where(
+                    i => i.UserId == id.Value).Single();
+                viewModel.AuthorList = bookmark.Book.BookAuthors.Select(s => s.Author);
+                viewModel.CategoryList = bookmark.Book.BookCategories.Select(s => s.Category);
+                viewModel.KeywordList = bookmark.Book.BookKeywords.Select(s => s.Keyword);
+
+            }
+
+            return View(viewModel);
         }
 
-        // GET: Bookmark/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Bookmark/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Bookmark/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult SetBookmark(int UserId, int BookId)
         {
-            try
+            var bm = new Bookmark
             {
-                // TODO: Add insert logic here
+                UserId = UserId,
+                BookId = BookId
+            };
 
-                return RedirectToAction(nameof(Index));
+            try
+            {                
+                _context.Bookmarks.Add(bm);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Book");
             }
             catch
             {
                 return View();
             }
-        }
-
-        // GET: Bookmark/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Bookmark/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Bookmark/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
         }
 
         // POST: Bookmark/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public IActionResult DeleteBookmark(int UserId, int BookId)
         {
+            var bookmark = _context.Bookmarks.Find(UserId, BookId);
+
+            if (bookmark == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                _context.Bookmarks.Remove(bookmark);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Book");
             }
             catch
             {

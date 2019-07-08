@@ -3,14 +3,16 @@ using System;
 using LibraryData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20190704192703_Initial 1.4")]
+    partial class Initial14
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,6 +167,8 @@ namespace LibraryData.Migrations
 
                     b.HasKey("UserId", "BookId");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("Ratings");
                 });
 
@@ -269,6 +273,19 @@ namespace LibraryData.Migrations
 
                     b.HasOne("LibraryData.Models.User", "User")
                         .WithMany("Bookmarks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany("Ratings")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany("Ratings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SWTlib.Models.ViewModels
 {
-    public class RentalViewModel : ViewTestModel
+    public class RentalViewModel : ListViewModel
     {
         public int RentalId { get; set; }
        

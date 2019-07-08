@@ -25,27 +25,29 @@ namespace SWTlib.Controllers
 
         private void ReturnDateDropDown(object selectedDate = null)
         {
-            var returnDates = new List<ReturnDateHelper>();
-            returnDates.Add( new ReturnDateHelper
+            var returnDates = new List<ReturnDateHelper>
             {
-                Duration = "1 Week",
-                ReturnDate = DateTime.Now.AddDays(7)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "2 Weeks",
-                ReturnDate = DateTime.Now.AddDays(14)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "3 Weeks",
-                ReturnDate = DateTime.Now.AddDays(21)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "4 Weeks",
-                ReturnDate = DateTime.Now.AddMonths(1)
-            });
+                new ReturnDateHelper
+                {
+                    Duration = "1 Week",
+                    ReturnDate = DateTime.Now.AddDays(7)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "2 Weeks",
+                    ReturnDate = DateTime.Now.AddDays(14)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "3 Weeks",
+                    ReturnDate = DateTime.Now.AddDays(21)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "4 Weeks",
+                    ReturnDate = DateTime.Now.AddMonths(1)
+                }
+            };
 
 
             var dateQuery = from d in returnDates
@@ -59,27 +61,29 @@ namespace SWTlib.Controllers
             Rental rental = _context.Rentals.Where(r => r.Id == RentalId.Value).Single();
             var lastDate = rental.ReturnDate;
 
-            var returnDates = new List<ReturnDateHelper>();
-            returnDates.Add(new ReturnDateHelper
+            var returnDates = new List<ReturnDateHelper>
             {
-                Duration = "1 Week",
-                ReturnDate = lastDate.AddDays(7)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "2 Weeks",
-                ReturnDate = lastDate.AddDays(14)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "3 Weeks",
-                ReturnDate = lastDate.AddDays(21)
-            });
-            returnDates.Add(new ReturnDateHelper
-            {
-                Duration = "4 Weeks",
-                ReturnDate = lastDate.AddMonths(1)
-            });
+                new ReturnDateHelper
+                {
+                    Duration = "1 Week",
+                    ReturnDate = lastDate.AddDays(7)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "2 Weeks",
+                    ReturnDate = lastDate.AddDays(14)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "3 Weeks",
+                    ReturnDate = lastDate.AddDays(21)
+                },
+                new ReturnDateHelper
+                {
+                    Duration = "4 Weeks",
+                    ReturnDate = lastDate.AddMonths(1)
+                }
+            };
 
 
             var dateQuery = from d in returnDates
@@ -89,7 +93,7 @@ namespace SWTlib.Controllers
         }
 
         // GET: Rental
-        public ActionResult Index(int? id, int? BookId )
+        public ActionResult Index(int? id)
         {
             var viewModel = new RentalViewModel
             {
@@ -124,7 +128,7 @@ namespace SWTlib.Controllers
 
 
         // GET: Rental/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details()
         {
             return View();
         }
@@ -144,10 +148,12 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
-            var createRental = new Rental();
-            createRental.BookId = book.Id;
-            createRental.Book = book;
-                     
+            var createRental = new Rental
+            {
+                BookId = book.Id,
+                Book = book
+            };
+
             //ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name");
             ReturnDateDropDown();
             return View(createRental);
