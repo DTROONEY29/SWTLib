@@ -74,16 +74,25 @@ namespace SWTlib.Controllers
             {
                 return NotFound();
             }
-            CheckRating();
+
+            CheckRating(id, 4);
 
             return View(book);
         }
 
-        public void CheckRating()
+        public void CheckRating(int? BookId, int? UserId)
         {
-            var allRatings = _context.Ratings.ToList();
 
-            ViewBag.Ratings = allRatings;
+            var rating = _context.Ratings.Find(UserId, BookId);
+
+            if (rating != null)
+            {
+                ViewBag.Ratings = true;
+            }
+            else
+            {
+                ViewBag.Ratings = false;
+            }            
         }
 
         private void LocationDropDownList(object selectedLocation = null)
@@ -92,6 +101,14 @@ namespace SWTlib.Controllers
                                  orderby l.LocationName
                                  select l;
             ViewBag.Id = new SelectList(locationsQuery.AsNoTracking(), "Id", "LocationName", selectedLocation);
+        }
+
+        private void BookDropDownList(object selectedBook = null)
+        {
+            var booksQuery = from l in _context.Books
+                             orderby l.Title
+                             select l;
+            ViewBag.Books = new SelectList(booksQuery.AsNoTracking(), "Id", "Title", selectedBook);
         }
 
         private void PopulateJoinTableData(Book book)
@@ -106,7 +123,7 @@ namespace SWTlib.Controllers
 
             var authorViewModel = new List<JoinTableDataViewModel>();
             var categoryViewModel = new List<JoinTableDataViewModel>();
-            var keywordViewModel = new List<JoinTableDataViewModel>();        
+            var keywordViewModel = new List<JoinTableDataViewModel>();
 
             //Authors
             foreach (var author in allAuthors)
@@ -143,9 +160,9 @@ namespace SWTlib.Controllers
             ViewData["Categories"] = categoryViewModel;
             ViewData["Keywords"] = keywordViewModel;
 
-            
+
         }
-              
+
 
         // GET: Book/Create
         public IActionResult Create()
@@ -158,8 +175,9 @@ namespace SWTlib.Controllers
             };
 
             LocationDropDownList();
-            
-            var authors = _context.Authors.Select(c => new {
+
+            var authors = _context.Authors.Select(c => new
+            {
                 AuthorId = c.Id,
                 c.AuthorName
             }).ToList();
@@ -171,7 +189,7 @@ namespace SWTlib.Controllers
                 c.CategoryName
             }).ToList();
             ViewBag.Categories = new MultiSelectList(categories, "CategoryId", "CategoryName");
-            
+
             var keywrd = _context.Keywords.Select(c => new
             {
                 KeywordId = c.Id,
@@ -179,7 +197,7 @@ namespace SWTlib.Controllers
             }).ToList();
             ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");/**/
 
-            return View();            
+            return View();
         }
 
         // POST: Book/Create
@@ -187,7 +205,7 @@ namespace SWTlib.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Title,ISBN,Publisher,Year,Description,Language,LocationId,")] Book book, string[] selectedAuthors, string[] selectedCategories, string[] selectedKeywords)
         {
-            
+
             if (selectedAuthors != null)
             {
                 //Create a new List<int> to store the AuthorId's.
@@ -218,7 +236,7 @@ namespace SWTlib.Controllers
                 {
                     var authorToAdd = new BookAuthor { BookId = book.Id, AuthorId = author };
                     book.BookAuthors.Add(authorToAdd);
-                }           
+                }
             }
 
             if (selectedCategories != null)
@@ -283,30 +301,14 @@ namespace SWTlib.Controllers
             return View(book);
         }
 
-        // GET: Book/Edit/5
-        public ActionResult Edit(int id) => View();
 
-        // POST: Book/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // GET: Book/List
+        public IActionResult List()
         {
-            if (collection == null)
-            {
-                throw new System.ArgumentNullException(nameof(collection));
-            }
-
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            BookDropDownList();
+            return View();
         }
+
 
         // GET: Book/Delete/5
         public async Task<ActionResult> Delete(int? id)
@@ -319,10 +321,11 @@ namespace SWTlib.Controllers
             var book = await _context.Books.AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id);
 
+
             if (book == null)
             {
                 return NotFound();
-            }           
+            }
 
             return View(book);
         }
@@ -347,7 +350,7 @@ namespace SWTlib.Controllers
             {
                 _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));                
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -355,7 +358,7 @@ namespace SWTlib.Controllers
             }
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddDown(int userid, int bookid)
@@ -381,31 +384,38 @@ namespace SWTlib.Controllers
                 ModelState.AddModelError("", "Unable to save changes. " +
                     "Try again, and if the problem persists, " +
                     "see your system administrator.");
-                throw;
+                return RedirectToAction("Details", "Book", new { Id = bookid });
             }
         }
 
         // Rating Logic
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddUp(int? id)
-        {  
-            var book = _context.Books.FirstOrDefault(s => s.Id == id);
-            
-                try
-                {
-                    book.RatingUp += 1;
-                    _context.SaveChanges();
-                return RedirectToAction("Details", "Book", new { Id = id });
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                throw;
-                }
-            }            
+        public IActionResult AddUp(int userid, int bookid)
+        {
+            var book = _context.Books.FirstOrDefault(s => s.Id == bookid);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userid);
+            var rating = new Rating
+            {
+                BookId = book.Id,
+                UserId = user.Id
+            };
+
+            try
+            {
+                _context.Ratings.Add(rating);
+                book.RatingUp += 1;
+                _context.SaveChanges();
+                return RedirectToAction("Details", "Book", new { Id = bookid });
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+                return RedirectToAction("Details", "Book", new { Id = bookid });
+            }
         }
+    }
 }

@@ -42,7 +42,7 @@
                                                     
                                                     if (Model.BookmarkList.Any(x => x.BookId.Equals(item.Id)))
                                                     {
-                                                        <form asp-action="DeleteBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="">
+                                                        <form asp-action="DeleteBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="1">
                                                             <div class="bm-hover">
                                                                 <button type="submit" class="bg-transparent border-0 btn-rating">
                                                                     <i class="fas fa-bookmark fa-2x bm-yellow"></i>
@@ -52,7 +52,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <form asp-action="SetBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="">
+                                                        <form asp-action="SetBookmark" asp-controller="Bookmark" method="post" asp-route-bookid="@item.Id" asp-route-userid="1">
                                                             <div class="bm-hover">
                                                                 <button type="submit" class="bg-transparent border-0 btn-rating">
                                                                     <i class="far fa-bookmark fa-2x bm-yellow"></i>

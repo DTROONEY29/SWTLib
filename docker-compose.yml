@@ -1,9 +1,8 @@
-version: '3.7'
+version: '3.4'
 
 services:
-  app:
-    build: .
-    ports:
-      - "5000:5000"
-    env_file: 
-      - local.env
+  swtlib:
+    image: ${DOCKER_REGISTRY-}swtlib
+    build:
+      context: .
+      dockerfile: SWTlib\Dockerfile

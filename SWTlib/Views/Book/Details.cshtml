@@ -66,44 +66,65 @@
                 </div>
                 <div class="ml-auto">
                     <div class="d-flex flex-row mr-2">
-                        <div class="d-flex flex-row justify-content-center align-content-center">
-                            <div class="align-self-center pb-1">
-                                <form asp-action="AddUp" asp-controller="Book" method="post" asp-route-userid="2" asp-route-bookid="@Model.Id">
-                                    <div class="thumb-hover">
-                                        <button type="submit" class="bg-transparent border-0 btn-rating">
-                                            <i class="far fa-thumbs-up fa-lg thumb-green"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingUp)</big></div>
-                        </div>
+                        @{
 
-                        <div class="d-flex flex-row ml-4">
-                            <div class="align-self-center pt-2">
-                                @{
-                                    var cRating = new LibraryData.Models.Rating { BookId = Model.Id, UserId = 2};
-                                    var allRatings = ViewBag.Ratings;
-
-                                    if (allRatings.Contains(cRating))
-                                    {
-                                        <div>Is drin</div>
-                                    }
-                                    else
-                                    {
-                                        <div>Nix da</div>
-                                    }
-                                }
-                                <form asp-action="AddDown" asp-controller="Book" method="post" asp-route-userid="2" asp-route-bookid="@Model.Id">
-                                    <div class="thumb-hover">
-                                        <button type="submit" class="bg-transparent border-0 btn-rating">
-                                            <i class="far fa-thumbs-down fa-lg thumb-red"></i>
-                                        </button>
+                            if (ViewBag.Ratings == true)
+                            {
+                                <div class="d-flex flex-row justify-content-center align-content-center">
+                                    <div class="align-self-center pb-1">
+                                        <form asp-action="AddUp" asp-controller="Book" method="post" asp-route-userid="4" asp-route-bookid="@Model.Id">
+                                            <div class="thumb-hover">
+                                                <button type="submit" class="bg-transparent border-0 btn-rating disabled">
+                                                    <i class="fas fa-thumbs-up fa-lg thumb-green"></i>
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingDown)</big></div>
-                        </div>
+                                    <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingUp)</big></div>
+                                </div>
+                                <div class="d-flex flex-row ml-4">
+                                    <div class="align-self-center pt-2">
+
+                                        <form asp-action="AddDown" asp-controller="Book" method="post" asp-route-userid="4" asp-route-bookid="@Model.Id">
+                                            <div class="thumb-hover">
+                                                <button type="submit" class="bg-transparent border-0 btn-rating disabled">
+                                                    <i class="fas fa-thumbs-down fa-lg thumb-red"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingDown)</big></div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-row justify-content-center align-content-center">
+                                    <div class="align-self-center pb-1">
+                                        <form asp-action="AddUp" asp-controller="Book" method="post" asp-route-userid="4" asp-route-bookid="@Model.Id">
+                                            <div class="thumb-hover">
+                                                <button type="submit" class="bg-transparent border-0 btn-rating">
+                                                    <i class="far fa-thumbs-up fa-lg thumb-green"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingUp)</big></div>
+                                </div>
+                                <div class="d-flex flex-row ml-4">
+                                    <div class="align-self-center pt-2">
+
+                                        <form asp-action="AddDown" asp-controller="Book" method="post" asp-route-userid="4" asp-route-bookid="@Model.Id">
+                                            <div class="thumb-hover">
+                                                <button type="submit" class="bg-transparent border-0 btn-rating">
+                                                    <i class="far fa-thumbs-down fa-lg thumb-red"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingDown)</big></div>
+                                </div>
+                            }
+                        }
 
                     </div>
                 </div>
