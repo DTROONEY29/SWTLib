@@ -55,6 +55,8 @@ namespace SWTlib
                     options.TokenEndpoint = "https://gitlab.rz.uni-bamberg.de/oauth/token";
                     options.UserInformationEndpoint = "https://gitlab.rz.uni-bamberg.de/api/v4/user";
 
+                    options.SaveTokens = true;
+
                     options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
                     options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
                     options.ClaimActions.MapJsonKey("urn:gitlab:login", "login");
