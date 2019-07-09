@@ -8,10 +8,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-nanoserver-1803 AS build
 WORKDIR /src
-Copy *.sln ./
 COPY ["SWTlib/SWTlib.csproj", "SWTlib/"]
-COPY ["SWTlib/LibraryContext.csproj", "LibraryContext/"]
-RUN dotnet restore
+COPY ["LibraryData/LibraryData.csproj", "LibraryData/"]
+RUN dotnet restore "SWTlib/SWTlib.csproj"
 COPY . .
 WORKDIR "/src/SWTlib"
 RUN dotnet build "SWTlib.csproj" -c Release -o /app
