@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using LibraryData;
 using LibraryData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SWTlib.Models.Helpers;
 using SWTlib.Models.ViewModels;
 
 namespace SWTlib.Controllers
@@ -75,7 +80,7 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
-            CheckRating(id, 4);
+            CheckRating(id, 1);
 
             return View(book);
         }
@@ -302,8 +307,65 @@ namespace SWTlib.Controllers
         }
 
 
+        // GET: Book/Edit
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var book =  _context.Books
+                .Include(i => i.Location)
+                .Include(i => i.BookAuthors)
+                    .ThenInclude(i => i.Author)
+                .Include(i => i.BookCategories)
+                    .ThenInclude(i => i.Category)
+                .Include(i => i.BookKeywords)
+                    .ThenInclude(i => i.Keyword)
+                .FirstOrDefault(m => m.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            LocationDropDownList();
+            PopulateJoinTableData(book);
+
+            var authors = _context.Authors.Select(c => new
+            {
+                AuthorId = c.Id,
+                c.AuthorName
+            }).ToList();
+            ViewBag.Authors = new MultiSelectList(authors, "AuthorId", "AuthorName");
+
+            var categories = _context.Categories.Select(c => new
+            {
+                CategoryId = c.Id,
+                c.CategoryName
+            }).ToList();
+            ViewBag.Categories = new MultiSelectList(categories, "CategoryId", "CategoryName");
+
+            var keywrd = _context.Keywords.Select(c => new
+            {
+                KeywordId = c.Id,
+                c.KeywordName
+            }).ToList();
+            ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");
+
+            return View(book);
+        }
+
         // GET: Book/List
-        public IActionResult List()
+        public IActionResult ListEdit()
+        {
+            BookDropDownList();
+            return View();
+        }
+
+        // GET: Book/List
+        public IActionResult ListDelete()
         {
             BookDropDownList();
             return View();
@@ -417,5 +479,66 @@ namespace SWTlib.Controllers
                 return RedirectToAction("Details", "Book", new { Id = bookid });
             }
         }
+
+        //Import XML files
+        [HttpPost]
+        [Route("importXML")]
+        public async Task<IActionResult> ImportXML(IFormFile xmlFile)
+        {
+            try
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/xml", xmlFile.FileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await xmlFile.CopyToAsync(stream);
+                }
+                ProcessImport(path);
+                TempData["Message"] = "Done";
+            }
+
+            catch (Exception e)
+            {
+                TempData["Message"] = e.Message;
+            }
+
+            return RedirectToAction("AddContent", "Home");
+        }
+
+        private List<Book> ProcessImport(string path)
+        {            
+            XDocument xDocument = XDocument.Load(path);
+            List<Book> books = xDocument.Descendants("book")
+                .Select(b => new Book()
+                {
+                    Title = b.Element("title").Value,
+                    ISBN = b.Element("isbn").Value,
+                    Description = b.Element("description").Value,
+                    Publisher = b.Element("publisher").Value,
+                    Year = Convert.ToInt32(b.Element("year").Value),
+                    Language = b.Element("language").Value
+                }).ToList();
+                
+                foreach(var book in books)
+                {
+                var bookInfo = _context.Books.SingleOrDefault(a => a.ISBN.Equals(book.ISBN));
+                if (bookInfo != null)
+                {
+                    bookInfo.ISBN = book.ISBN;
+                    bookInfo.Title = book.Title;
+                    bookInfo.Description = book.Description;
+                    bookInfo.Publisher = book.Publisher;
+                    bookInfo.Year = book.Year;
+                }
+                else
+                {
+                    _context.Books.Add(book);
+                }
+
+                _context.SaveChanges();
+                }
+                
+            return books;
+        }
+
     }
 }

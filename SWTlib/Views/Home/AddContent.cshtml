@@ -19,7 +19,9 @@
             <div class="d-flex flex-row justify-content-around">
                 <div><a asp-area="" asp-controller="Book" asp-action="Create">  <h5 class="card-title">Add</h5> </a></div>
                 <div>|</div>
-                <div><a asp-area="" asp-controller="Book" asp-action="List">  <h5 class="card-title">Delete</h5> </a></div>
+                <div><a asp-area="" asp-controller="Book" asp-action="ListEdit">  <h5 class="card-title">Edit</h5> </a></div>
+                <div>|</div>
+                <div><a asp-area="" asp-controller="Book" asp-action="ListDelete">  <h5 class="card-title">Delete</h5> </a></div>
             </div>
             <hr />
             <p class="card-text">Manage books in the database.</p>
@@ -49,6 +51,26 @@
             </div>
             <hr />
             <p class="card-text">Manage rooms in the database.</p>
+        </div>
+    </div>
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="d-flex flex-fill border rounded p-2">
+    <div class="d-flex flex-row w-100">
+        <div class="d-flex align-content-center"><h5 class="m-0 align-self-center">Import XML files:</h5></div>
+        <div class="d-flex flex-fill justify-content-center">
+            <div class="d-flex">
+                @ViewBag.result
+                <br />
+                <form method="post" enctype="multipart/form-data" asp-controller="Book" asp-action="importXML">
+                    <input type="file" name="xmlFile" />
+                    <input type="submit" class="btn btn-dark" value="Import" />
+                </form>
+            </div>
         </div>
     </div>
 </div>

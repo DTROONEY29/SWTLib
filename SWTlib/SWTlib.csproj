@@ -33,4 +33,9 @@
     <None Include="wwwroot\img\ShoppingCart.png" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\xml\" />
+  </ItemGroup>
+
 </Project>

@@ -73,6 +73,7 @@ namespace SWTlib.Controllers
 
         public IActionResult AddContent()
         {
+            ViewBag.result = TempData["Message"];
             return View();
         }
 

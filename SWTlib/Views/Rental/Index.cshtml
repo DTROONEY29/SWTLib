@@ -20,7 +20,7 @@
 
         @foreach (var item in Model.RentalList)
         {
-            <div class="slide-content">
+            <div>
                 <a class="clean-link" asp-controller="Book" asp-action="Details" asp-route-id="@item.BookId">
                     <div class="d-flex flex-column border border-dark rounded mt-1 mb-3 pl-4 bg-light shadow" id="books-hover">
                         <div class="d-flex flex-row">
