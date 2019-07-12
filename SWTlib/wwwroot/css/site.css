@@ -88,3 +88,181 @@ body {
     font-weight: 300;
     line-height: 1.2;
 }
+
+a.clean-link {
+    text-decoration: none;
+    color: black;
+}
+
+#books-hover:hover {
+    background-color: darkgray !important;
+}
+
+#img-button {
+    width: 64px;
+    height: 64px;
+}
+
+.slide-content {
+    animation: Slide_Up 0.3s ease;
+}
+
+@keyframes Slide_Up {
+    0% {
+        transform: translateY(300px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Buttons */
+.swt-button {
+    background-color: #00457d;
+    color: white;
+}
+
+.swt-button:hover {
+    background-color: #002746;
+    color: white;
+}
+
+.swt-button-side {
+    background-color: #00457d;
+    color: white;
+    width: 55px;
+    border-radius: 0 !important;
+}
+
+.swt-button-side:hover {
+    background-color: #002746;
+    color: white;
+}
+
+input.swt-button {
+    width: 8em;
+    height: 3em;
+}
+
+.rotate {
+    transform: rotate(-90deg);
+    /* Legacy vendor prefixes that you probably don't need... */
+    /* Safari */
+    -webkit-transform: rotate(-90deg);
+    /* Firefox */
+    -moz-transform: rotate(-90deg);
+    /* IE */
+    -ms-transform: rotate(-90deg);
+    /* Opera */
+    -o-transform: rotate(-90deg);
+    /* Internet Explorer */
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+.btn-rating:focus {
+    outline: none;
+}
+
+/* Dashboard */
+.form-container {
+    text-align: center;
+}
+
+.form {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+}
+
+.active-cyan-2 input[type=text]:focus:not([readonly]) {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #4dd0e1;
+    box-shadow: 0 1px 0 0 #4dd0e1;
+}
+
+.card-deck {
+    margin-top: 40px;
+}
+
+
+.btn-groupContainer {
+    text-align: center;
+}
+
+.btn-group {
+    display: inline-block;
+}
+
+.btn-swt-outline-secondary {
+    border-radius: 0px 5px 5px 0px !important;
+}
+
+/* Rating System */
+.thumb-green {
+    color: green;
+}
+
+.thumb-red {
+    color: red;
+}
+
+.thumb-hover {
+    cursor: pointer;
+}
+
+.thumb-hover:hover .fa-thumbs-up:before {
+    font-weight: bolder;
+}
+
+.thumb-hover:hover .fa-thumbs-down:before {
+    font-weight: bolder;
+}
+
+
+#spinner {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    color: black;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+}
+
+#overlay {
+    content: '';
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: 2;
+}
+
+.testwrapper {
+    position: relative;
+}
+
+/* Bookmarks */
+.bm-yellow {
+    color: darkgoldenrod;
+}
+
+bm-hover:hover .fa-bookmark:before {
+    font-weight: bolder;
+    z-index: 200;
+}
+
+bm-delete:hover .fa-window-close:before {
+    color: darkred !important;
+    background-color: white !important;
+    z-index: 200;
+}

@@ -1,8 +1,68 @@
-﻿@{
+﻿@model SWTlib.Models.ViewModels.BookViewModel
+
+@{
     ViewData["Title"] = "DASHBOARD";
 }
 
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to SWTlib!</h1>
+</div>
+
+<div class="form-container">
+    <div class="form">
+        <!-- Search form -->
+        <form class="form-inline active-cyan-3 active-cyan-4 justify-content-center">
+            <div class="w-100">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input class="form-control form-control-sm w-50" type="text" placeholder="Search"
+                       aria-label="Search">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="btn-groupContainer">
+    <div class="btn-group">
+
+        <button type="button" class="btn btn-outline-secondary mr-1">Submit</button>
+        <a asp-controller="Book" asp-action="Index">
+            <input type="button" class="btn btn-outline-secondary rounded-0 btn-swt-outline-secondary mr-2" value="View all books" />
+        </a>
+
+    </div>
+</div>
+
+<div class="card-deck">
+    @{ 
+        foreach (var cat in Model.CategoryList)
+        {
+        <div class="col-sm-4 mb-5">
+            <div class="card">
+                <img class="card-img-top" src="~/img/catImage@{@cat.Id}.jpg" width="259" height="174" alt="Card image cap">
+                <div class="card-body">
+                    <a asp-controller="Home" asp-action="Category" asp-route-id="@cat.Id">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => cat.CategoryName)</h5>
+                    </a>
+                    <p class="card-text">Category summary.</p>
+                </div>
+                <div class="card-footer">
+
+                    @{
+                        var bCount = @cat.BookCategories.Count();
+                        if (bCount == 1)
+                        {
+                            <small class="text-muted">@bCount Book</small>
+                        }
+                        if (bCount > 1 || bCount == 0)
+                        {
+                            <small class="text-muted">@bCount Books</small>
+                        }
+                    }
+
+                </div>
+            </div>            
+        </div>
+        }
+     }
 </div>

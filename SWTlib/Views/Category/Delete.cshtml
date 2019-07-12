@@ -1,0 +1,39 @@
+﻿@model IEnumerable<LibraryData.Models.Category>
+
+@{
+    ViewData["Title"] = "DELETE CATEGORY";
+}
+
+<h1>Delete Category</h1>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Category:
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@item.Id">
+                        <div class="form-group">
+                            <input type="submit" value="Delete" class="btn btn-dark" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="AddContent" asp-controller="Home">Back to List</a>
+</div>

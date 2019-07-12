@@ -1,0 +1,44 @@
+﻿@model LibraryData.Models.Rental
+
+@{
+    ViewData["Title"] = "RETURN BOOK";
+}
+
+<!-- Breadcrumb Navigation-->
+<ul class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Rental" asp-action="Index">Rentals</a></li>
+    <li class="breadcrumb-item active">Return Book</li>
+</ul>
+
+<!-- Main Content -->
+<h3>Are you sure you want to return your Book?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Rental Date:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RentalDate)
+        </dd>
+        <dt class="col-sm-2">
+            Return Date:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReturnDate)
+        </dd>
+        <dt class="col-sm-2">
+            Book Title:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Book.Title)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Return" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to Rentals</a>
+    </form>
+</div>
