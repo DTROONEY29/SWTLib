@@ -4,7 +4,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GitLabApiClient;
-using GitLabApiClient.Models.Issues.Requests;
+using GitLabApiClient.Models.Issues.Responses;
+using GitLabApiClient.Models.Users.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,7 +22,12 @@ namespace SWTlib.Pages
 
         public string GitlabUrl { get; set; }
 
-        public IReadOnlyList<Repository> Repositories { get; set; }
+        public string GitlabEmail { get; set; }
+
+        public string Id { get; set; }
+
+
+
 
         public async Task OnGetAsync()
         {
@@ -31,12 +37,20 @@ namespace SWTlib.Pages
                 GitlabLogin = User.FindFirst(c => c.Type == "urn:gitlab:login")?.Value;
                 GitlabUrl = User.FindFirst(c => c.Type == "urn:gitlab:url")?.Value;
                 GitlabAvatar = User.FindFirst(c => c.Type == "urn:gitlab:avatar")?.Value;
+                GitlabEmail = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 string accessToken = await HttpContext.GetTokenAsync("access_token");
+                string idToken = await HttpContext.GetTokenAsync("id_token");
 
-                var gitlab = new GitLabClient("https://gitlab.rz.uni-bamberg.de", accessToken);
-                await gitlab.Issues.CreateAsync(new CreateIssueRequest("1179", "TEST"));
+                var client = new GitLabClient("https://gitlab.rz.uni-bamberg.de/", accessToken);              
 
+
+
+                Console.WriteLine(GitlabName);
+                
+                Console.WriteLine(Id);
+
+                Console.WriteLine(client.HostUrl);
 
             }
         }
