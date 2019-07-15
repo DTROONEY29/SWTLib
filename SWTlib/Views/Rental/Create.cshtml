@@ -1,0 +1,51 @@
+﻿@model LibraryData.Models.Rental
+
+
+
+@{
+    ViewData["Title"] = "RENT BOOK";
+}
+
+<!-- Breadcrumb Navigation-->
+<ul class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Book" asp-action="Index">Books</a></li>
+    <li class="breadcrumb-item active">Rent Book</li>
+</ul>
+
+<!-- Main Content -->
+<h2>Do you want to rent the following book?</h2>
+<br />
+<hr />
+<div class="row">
+    <div class="w-100">
+        <div class="d-flex flex-row align-items-center">
+            <div class="w-25"></div>
+            <div class="w-25 text-left"><h4>Title</h4></div>
+            <div class="w-50 text-center"><h4>@Model.Book.Title</h4></div>
+        </div>
+        <br />
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" }) @Html.HiddenFor(model => model.BookId)
+            <div class="form-group d-flex flex-row align-items-center">
+                <label asp-for="ReturnDate" class="control-label w-50 text-center">Please select your return date:</label>
+                <div class="w-50 text-center pl-5 pr-5">
+                    <select asp-for="ReturnDate" asp-items="ViewBag.ReturnDate" class="form-control text-center">
+                        <option value="">-- Select Duration --</option>
+                    </select>
+                    <div id="returndate"></div>
+                </div>
+                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+            </div>
+            <div class="pl-3 pr-3 pb-2 pt-1"><hr /></div>
+
+            <div class="d-flex justify-content-end">
+                <div class="form-group mt-3 mr-5">
+                    <input type="submit" value="Rent" class="btn swt-button" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

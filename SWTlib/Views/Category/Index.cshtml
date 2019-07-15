@@ -1,0 +1,21 @@
+﻿@model SWTlib.Models.ViewModels.BookViewModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<div>
+    @foreach (var cat in Model.CategoryList)
+    {
+    <div>
+        <div>
+            <a class="clean-link" asp-controller="Category" asp-action="Details" asp-route-id="@cat.Id">
+                <h3>@Html.DisplayFor(modelItem => cat.CategoryName)</h3>
+            </a>
+        </div>
+
+    </div>
+    }
+</div>

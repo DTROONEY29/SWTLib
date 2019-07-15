@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "MANAGE CONTENT";
+}
+
+<!-- Breadcrumb Navigation-->
+<ul class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item active">Add Content</li>
+</ul>
+
+
+<!-- Main Content -->
+<div class="card-deck">
+    <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Book</h3></div>
+        <img class="card-img-top" src="~/img/AddBook.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Book" asp-action="Create">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>
+                <div><a asp-area="" asp-controller="Book" asp-action="ListEdit">  <h5 class="card-title">Edit</h5> </a></div>
+                <div>|</div>
+                <div><a asp-area="" asp-controller="Book" asp-action="ListDelete">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage books in the database.</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Category</h3></div>
+        <img class="card-img-top" src="~/img/catImage2.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Category" asp-action="Create">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>                
+                <div><a asp-area="" asp-controller="Category" asp-action="Delete">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage categories in the database.</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body"><h3 class="card-title text-center">Room</h3></div>
+        <img class="card-img-top" src="~/img/catImage3.jpg" width="259" height="174" alt="Card image cap">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-around">
+                <div><a asp-area="" asp-controller="Home" asp-action="AddRoom">  <h5 class="card-title">Add</h5> </a></div>
+                <div>|</div>                
+                <div><a asp-area="" asp-controller="Home" asp-action="DeleteRoom">  <h5 class="card-title">Delete</h5> </a></div>
+            </div>
+            <hr />
+            <p class="card-text">Manage rooms in the database.</p>
+        </div>
+    </div>
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="d-flex flex-fill border rounded p-2">
+    <div class="d-flex flex-row w-100">
+        <div class="d-flex align-content-center"><h5 class="m-0 align-self-center">Import XML files:</h5></div>
+        <div class="d-flex flex-fill justify-content-center">
+            <div class="d-flex">
+                @ViewBag.result
+                <br />
+                <form method="post" enctype="multipart/form-data" asp-controller="Book" asp-action="importXML">
+                    <input type="file" name="xmlFile" />
+                    <input type="submit" class="btn btn-dark" value="Import" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

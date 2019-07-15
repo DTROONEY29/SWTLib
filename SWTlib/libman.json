@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "chosen@1.8.7",
+      "destination": "wwwroot/lib/chosen/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "font-awesome-5-css@5.4.1",
+      "destination": "wwwroot/lib/fontawesome"
+    }    
+  ]
+}

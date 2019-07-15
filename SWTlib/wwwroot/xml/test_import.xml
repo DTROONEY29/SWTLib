@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<books>
+  <book>
+    <title>Buch Nummer 1</title>
+    <isbn>0123456789101</isbn>
+    <description>Nix</description>
+    <publisher>Ich</publisher>
+    <year>2019</year>
+    <language>deutsch</language>
+  </book>
+  <book>
+    <title>Buch Nummer 2</title>
+    <isbn>0123456789102</isbn>
+    <description>Nix</description>
+    <publisher>Ich</publisher>
+    <year>2018</year>
+    <language>deutsch</language>
+  </book>
+  <book>
+    <title>Buch Nummer 3</title>
+    <isbn>0123456789103</isbn>
+    <description>Nix</description>
+    <publisher>Ich</publisher>
+    <year>2017</year>
+    <language>deutsch</language>
+  </book>
+  <book>
+    <title>Buch Nummer 4</title>
+    <isbn>0123456789104</isbn>
+    <description>Nix</description>
+    <publisher>Ich</publisher>
+    <year>2016</year>
+    <language>deutsch</language>
+  </book>
+</books>
