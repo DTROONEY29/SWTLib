@@ -19,7 +19,5 @@ namespace SWTlib.Models.ViewModels
         public bool AAssigned { get; set; }
         public bool CAssigned { get; set; }
         public bool KAssigned { get; set; }
-
-        public MultiSelectList Authors { get; set; }
     }
 }

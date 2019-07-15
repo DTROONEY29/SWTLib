@@ -91,7 +91,7 @@ namespace SWTlib.Controllers
             {
                 _context.Bookmarks.Remove(bookmark);
                 _context.SaveChanges();
-                return RedirectToAction("Index", "Bookmark");
+                return RedirectToAction("Index", "Book");
             }
             catch
             {

@@ -35,6 +35,10 @@ namespace LibraryData
                 .HasKey(c => new { c.BookId, c.KeywordId });
 
             modelBuilder.Entity<Book>()
+                .HasIndex(s => s.ISBN)
+                .IsUnique();
+
+            modelBuilder.Entity<Book>()
                 .Property(s => s.Status)
                 .HasDefaultValue(false);
 

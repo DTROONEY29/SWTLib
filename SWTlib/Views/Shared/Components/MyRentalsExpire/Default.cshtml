@@ -10,7 +10,7 @@
                     var returnDate = item.ReturnDate.Date;
                     var rDays = DateTime.Today.Date;
 
-                    if (returnDate == rDays)
+                    if (returnDate <= rDays)
                     {
                         <div class="progress shadow-sm" style="height: 20px">
                             <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">expired</div>

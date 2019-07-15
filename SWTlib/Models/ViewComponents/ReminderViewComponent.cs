@@ -27,6 +27,9 @@ namespace SWTlib.Models.ViewComponents
                 .OrderBy(x => x.Book.Rental.ReturnDate)
                 .ToListAsync();
 
+            var rentals = await _context.Rentals.ToListAsync();
+            ViewData["Rentals"] = rentals;
+
             return View(reminders);
         }
     }

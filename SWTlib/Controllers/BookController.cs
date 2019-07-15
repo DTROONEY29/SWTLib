@@ -23,6 +23,7 @@ namespace SWTlib.Controllers
         {
             _context = context;
         }
+
         // GET: Book
         public ActionResult Index(int? id)
         {
@@ -85,6 +86,8 @@ namespace SWTlib.Controllers
             return View(book);
         }
 
+
+        //
         public void CheckRating(int? BookId, int? UserId)
         {
 
@@ -129,7 +132,7 @@ namespace SWTlib.Controllers
             var authorViewModel = new List<JoinTableDataViewModel>();
             var categoryViewModel = new List<JoinTableDataViewModel>();
             var keywordViewModel = new List<JoinTableDataViewModel>();
-
+            
             //Authors
             foreach (var author in allAuthors)
             {
@@ -139,7 +142,7 @@ namespace SWTlib.Controllers
                     AuthorName = author.AuthorName,
                     AAssigned = bAuthors.Contains(author.Id)
                 });
-            }
+            }            
             //Categories
             foreach (var category in allCategories)
             {
@@ -161,11 +164,122 @@ namespace SWTlib.Controllers
                 });
             }
 
-            ViewData["Authors"] = authorViewModel;
+            ViewData["Authors"] = new MultiSelectList(authorViewModel, "AuthorId", "AuthorName");
             ViewData["Categories"] = categoryViewModel;
             ViewData["Keywords"] = keywordViewModel;
 
+        }
 
+
+        //Logic for updating Many-to-Many Relationship tables.
+        private void UpdateBookAuthors(string[] selectedAuthors, Book bookToUpdate)
+        {
+            if (selectedAuthors == null)
+            {
+                bookToUpdate.BookAuthors = new List<BookAuthor>();
+                return;
+            }
+
+            var selectedAuthorsHS = new HashSet<string>(selectedAuthors);
+            var bookAuthors = new HashSet<int>
+                (bookToUpdate.BookAuthors.Select(c => c.Author.Id));
+            foreach (var author in _context.Authors)
+            {
+                if (selectedAuthorsHS.Contains(author.Id.ToString()))
+                {
+                    if (!bookAuthors.Contains(author.Id))
+                    {
+                        bookToUpdate.BookAuthors.Add(new BookAuthor { BookId = bookToUpdate.Id, AuthorId = author.Id });
+                    }
+                }
+                else
+                {
+
+                    if (bookAuthors.Contains(author.Id))
+                    {
+                        BookAuthor authorToRemove = bookToUpdate.BookAuthors.FirstOrDefault(i => i.AuthorId == author.Id);
+                        _context.Remove(authorToRemove);
+                    }
+                }
+            }
+        }
+        private void UpdateBookCategories(string[] selectedCategories, Book bookToUpdate)
+        {
+            if (selectedCategories == null)
+            {
+                bookToUpdate.BookCategories = new List<BookCategory>();
+                return;
+            }
+
+            var selectedCategoriesHS = new HashSet<string>(selectedCategories);
+            var bookCategories = new HashSet<int>
+                (bookToUpdate.BookCategories.Select(c => c.Category.Id));
+            foreach (var category in _context.Categories)
+            {
+                if (selectedCategoriesHS.Contains(category.Id.ToString()))
+                {
+                    if (!bookCategories.Contains(category.Id))
+                    {
+                        bookToUpdate.BookCategories.Add(new BookCategory { BookId = bookToUpdate.Id, CategoryId = category.Id });
+                    }
+                }
+                else
+                {
+
+                    if (bookCategories.Contains(category.Id))
+                    {
+                        BookCategory categoryToRemove = bookToUpdate.BookCategories.FirstOrDefault(i => i.CategoryId == category.Id);
+                        _context.Remove(categoryToRemove);
+                    }
+                }
+            }
+        }
+        private void UpdateBookKeywords(string[] selectedKeywords, Book bookToUpdate)
+        {
+            if (selectedKeywords == null)
+            {
+                bookToUpdate.BookKeywords = new List<BookKeyword>();
+                return;
+            }
+
+            var selectedKeywordsHS = new HashSet<string>(selectedKeywords);
+            var bookKeywords = new HashSet<int>
+                (bookToUpdate.BookKeywords.Select(c => c.Keyword.Id));
+            foreach (var keyword in _context.Keywords)
+            {
+                if (selectedKeywordsHS.Contains(keyword.Id.ToString()))
+                {
+                    if (!bookKeywords.Contains(keyword.Id))
+                    {
+                        bookToUpdate.BookKeywords.Add(new BookKeyword { BookId = bookToUpdate.Id, KeywordId = keyword.Id });
+                    }
+                }
+                else
+                {
+
+                    if (bookKeywords.Contains(keyword.Id))
+                    {
+                        BookKeyword keywordToRemove = bookToUpdate.BookKeywords.FirstOrDefault(i => i.KeywordId == keyword.Id);
+                        _context.Remove(keywordToRemove);
+                    }
+                }
+            }
+        }
+
+
+        //Input validation if ISBN is already existend in database.
+        public JsonResult IsIsbnExistend(string ISBN, int? Id)
+        {
+            var validate = _context.Books.FirstOrDefault(x => x.ISBN == ISBN && x.Id != Id);
+
+            if (validate != null)
+            {
+                return Json(false);
+            }
+            else
+            {
+                return Json(true);
+            }
         }
 
 
@@ -200,7 +314,7 @@ namespace SWTlib.Controllers
                 KeywordId = c.Id,
                 c.KeywordName
             }).ToList();
-            ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");/**/
+            ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");
 
             return View();
         }
@@ -291,9 +405,17 @@ namespace SWTlib.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(book);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View(book);
+                }
+                
             }
 
             if (!ModelState.IsValid)
@@ -314,7 +436,7 @@ namespace SWTlib.Controllers
             {
                 return NotFound();
             }
-
+            
             var book =  _context.Books
                 .Include(i => i.Location)
                 .Include(i => i.BookAuthors)
@@ -324,6 +446,7 @@ namespace SWTlib.Controllers
                 .Include(i => i.BookKeywords)
                     .ThenInclude(i => i.Keyword)
                 .FirstOrDefault(m => m.Id == id);
+                
 
             if (book == null)
             {
@@ -339,7 +462,7 @@ namespace SWTlib.Controllers
                 c.AuthorName
             }).ToList();
             ViewBag.Authors = new MultiSelectList(authors, "AuthorId", "AuthorName");
-
+            
             var categories = _context.Categories.Select(c => new
             {
                 CategoryId = c.Id,
@@ -355,6 +478,62 @@ namespace SWTlib.Controllers
             ViewBag.Keywords = new MultiSelectList(keywrd, "KeywordId", "KeywordName");
 
             return View(book);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, string[] selectedAuthors, string[] selectedCategories, string[] selectedKeywords)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bookToUpdate = await _context.Books
+                .Include(i => i.Location)
+                .Include(i => i.BookAuthors)
+                    .ThenInclude(i => i.Author)
+                .Include(i => i.BookCategories)
+                    .ThenInclude(i => i.Category)
+                .Include(i => i.BookKeywords)
+                    .ThenInclude(i => i.Keyword)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (await TryUpdateModelAsync<Book>(
+                bookToUpdate,
+                "",
+                i => i.Title,
+                i => i.ISBN,
+                i => i.Publisher,
+                i => i.Year,
+                i => i.Description,
+                i => i.Language,
+                i => i.LocationId))
+            {
+                
+                UpdateBookAuthors(selectedAuthors, bookToUpdate);
+                UpdateBookCategories(selectedCategories, bookToUpdate);
+                UpdateBookKeywords(selectedKeywords, bookToUpdate);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            UpdateBookAuthors(selectedAuthors, bookToUpdate);
+            UpdateBookCategories(selectedCategories, bookToUpdate);
+            UpdateBookKeywords(selectedKeywords, bookToUpdate);
+            PopulateJoinTableData(bookToUpdate);
+            LocationDropDownList(bookToUpdate.LocationId);
+
+            return View(bookToUpdate);
         }
 
         // GET: Book/List

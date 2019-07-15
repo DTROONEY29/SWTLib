@@ -15,10 +15,24 @@
                 <div class="d-flex flex-fill justify-content-center">
                     <div class="d-flex ">
                         @{
+                            List<LibraryData.Models.Rental> rentals = new List<LibraryData.Models.Rental>();
+                            var exists = rentals.Where(x => x.BookId == item.BookId);
+
+                             foreach (var rental in ViewData["Rentals"] as List<LibraryData.Models.Rental>)
+                            {
+                                rentals.Add(rental);
+                            }
+
                             if (item.Book.Rental.ReturnDate.Date > DateTime.Today.Date)
                             {
                                 <b><i>@Html.DisplayFor(modelItem => item.Book.Rental.ReturnDate)</i></b>
+                            }                           
+
+                            else if (exists != null)
+                            {
+                                <b style="color: darkred">NOT RETURNED</b>
                             }
+
                             else
                             {
                                 <b style="color: green">AVAILABLE</b>
