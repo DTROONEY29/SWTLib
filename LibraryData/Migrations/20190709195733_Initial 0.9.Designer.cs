@@ -3,14 +3,16 @@ using System;
 using LibraryData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20190709195733_Initial 0.9")]
+    partial class Initial09
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,9 +64,6 @@ namespace LibraryData.Migrations
                     b.Property<int?>("Year");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ISBN")
-                        .IsUnique();
 
                     b.HasIndex("LocationId");
 
@@ -173,19 +172,6 @@ namespace LibraryData.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("LibraryData.Models.Reminder", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("BookId");
-
-                    b.HasKey("UserId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Reminders");
-                });
-
             modelBuilder.Entity("LibraryData.Models.Rental", b =>
                 {
                     b.Property<int>("Id")
@@ -287,19 +273,6 @@ namespace LibraryData.Migrations
 
                     b.HasOne("LibraryData.Models.User", "User")
                         .WithMany("Bookmarks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("LibraryData.Models.Reminder", b =>
-                {
-                    b.HasOne("LibraryData.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LibraryData.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

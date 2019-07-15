@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWTlib.Models.ViewModels
 {
-    public class BookViewModel : ListViewModel
+    public class BookViewModel : JoinTableDataViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -17,5 +17,9 @@ namespace SWTlib.Models.ViewModels
         public string Language { get; set; }
 
         public Location Location { get; set; }
+
+        public ICollection<BookAuthor> BookAuthors { get; set; }
+        public ICollection<BookCategory> BookCategories { get; set; }
+        public ICollection<BookKeyword> BookKeywords { get; set; }
     }
 }

@@ -83,7 +83,7 @@
     <div>
         <div class="container-fluid">
             <div class="row ml-4 mr-4 sidenav">
-                <div class="col col-lg-2 bg-swt-primary box-shadow">
+                <div class="col col-lg-2 bg-swt-primary box-shadow shadow">
                     <ul class="nav flex-column bg-swt display-5">
                         <li class="nav-item text-center">
                             <a class="nav-link text-swt-primary" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
@@ -115,9 +115,24 @@
                         </main>
                     </div>
                 </div>
-                <div class="col col-lg-2 bg-swt-secondary box-shadow">
+                <div class="col col-lg-2 bg-swt-secondary box-shadow shadow">
                     <div class="text-center">
-                        <h3>Placeholder</h3>
+                        <div class="border rounded border-dark mt-3 shadow-lg">
+                            <div class="border-bottom border-dark bg-swt-primary mb-2">
+                                <h3 class="text-white">My Reminders</h3>
+                            </div>
+                            <div class="p-2">
+                                @await Component.InvokeAsync("Reminder", new { id = 1})
+                            </div>
+                        </div>
+                        <div class="border rounded border-dark mt-3 shadow-lg">
+                            <div class="border-bottom border-dark bg-swt-primary mb-2">
+                                <h3 class="text-white">My Rentals</h3>
+                            </div>
+                            <div class="p-2">
+                                @await Component.InvokeAsync("MyRentalsExpire")
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

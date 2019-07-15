@@ -295,6 +295,61 @@ namespace SWTlib.Controllers
             }
         }
 
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddReminder(int userid, int bookid)
+        {
+            var book = _context.Books.Find(bookid);
+            var user = _context.Users.Find(userid);
+
+            var newReminder = new Reminder
+            {
+                UserId = userid,
+                BookId = bookid,
+                Book = book,
+                User = user                
+            };
+
+            try
+            {
+                _context.Reminders.Add(newReminder);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index", "Book");
+            }
+            catch
+            {
+                return RedirectToAction("Details", "Book", new { Id = bookid });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteReminder(int userid, int bookid)
+        {
+            var reminder = _context.Reminders.Find(userid, bookid);
+
+            if (reminder == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.Reminders.Remove(reminder);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Book");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [Route("component/[action]")]
+        public IActionResult Reminder() => ViewComponent("Reminder");
+
+        [Route("component/[action]")]
+        public IActionResult MyRentalsExpire() => ViewComponent("MyRentalsExpire");
     }
 }

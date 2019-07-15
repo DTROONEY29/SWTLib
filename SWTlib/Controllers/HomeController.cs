@@ -19,6 +19,7 @@ namespace SWTlib.Controllers
         {
             _context = context;
         }
+
         public ActionResult Index(int? id)
         {
             try
@@ -73,6 +74,7 @@ namespace SWTlib.Controllers
 
         public IActionResult AddContent()
         {
+            ViewBag.result = TempData["Message"];
             return View();
         }
 

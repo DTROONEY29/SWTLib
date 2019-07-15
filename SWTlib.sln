@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWTlib", "SWTlib\SWTlib.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryData", "LibraryData\LibraryData.csproj", "{565CEA85-7757-414D-9ED2-A0E39A73C576}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{41DAED85-45A8-400A-AFD0-3EFC82C3F172}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{565CEA85-7757-414D-9ED2-A0E39A73C576}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{565CEA85-7757-414D-9ED2-A0E39A73C576}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{565CEA85-7757-414D-9ED2-A0E39A73C576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41DAED85-45A8-400A-AFD0-3EFC82C3F172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41DAED85-45A8-400A-AFD0-3EFC82C3F172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41DAED85-45A8-400A-AFD0-3EFC82C3F172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41DAED85-45A8-400A-AFD0-3EFC82C3F172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

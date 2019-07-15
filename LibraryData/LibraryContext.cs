@@ -18,6 +18,7 @@ namespace LibraryData
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<BookKeyword> BookKeywords { get; set; }
         public DbSet<Bookmark> Bookmarks { get; set; }
+        public DbSet<Reminder> Reminders { get; set; }
         public DbSet<Rating> Ratings { get; set; }
 
 
@@ -35,8 +36,16 @@ namespace LibraryData
                 .HasKey(c => new { c.BookId, c.KeywordId });
 
             modelBuilder.Entity<Book>()
+                .HasIndex(s => s.ISBN)
+                .IsUnique();
+
+            modelBuilder.Entity<Book>()
                 .Property(s => s.Status)
                 .HasDefaultValue(false);
+
+            modelBuilder.Entity<Book>()
+                .Property(s => s.LocationId)
+                .HasDefaultValue(0);
 
             modelBuilder.Entity<Rental>()
                 .Property(s => s.ExtendedRental)
@@ -46,6 +55,9 @@ namespace LibraryData
                 .HasKey(c => new { c.UserId, c.BookId });
 
             modelBuilder.Entity<Rating>()
+                .HasKey(c => new { c.UserId, c.BookId });
+
+            modelBuilder.Entity<Reminder>()
                 .HasKey(c => new { c.UserId, c.BookId });
         }
     }
