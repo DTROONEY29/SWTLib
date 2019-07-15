@@ -13,12 +13,19 @@ using SWTlib.Models;
 using LibraryData;
 using LibraryData.Models;
 using User = LibraryData.Models.User;
+using Microsoft.AspNetCore.Http;
 
 namespace SWTlib.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly LibraryContext _context;
+
+        public const string SessionKeyName = "_Name";
+
+        public const string SessionKeyEmail = "_Email";
+
+        public const string SessionKeyId = "_Id";
 
         public IndexModel(LibraryContext context)
         {
@@ -35,6 +42,7 @@ namespace SWTlib.Pages
         public string GitlabEmail { get; set; }
 
         public string GitlabId { get; set; }
+
 
 
 
@@ -56,17 +64,25 @@ namespace SWTlib.Pages
                 int x = 0;
                 Int32.TryParse(GitlabId, out x);
 
-                Console.WriteLine(GitlabName);                
-                Console.WriteLine(GitlabId);
-                Console.WriteLine(GitlabEmail);
-                Console.WriteLine("----------");
+               
                 var user = new User();
                 user.Name = GitlabName;
                 user.Id = x;
                 user.Email = GitlabEmail;
-                _context.Users.Add(user);
-                _context.SaveChanges();
-
+                try
+                {
+                    _context.Users.Add(user);
+                    _context.SaveChanges();
+                } catch (Exception ex)
+                {
+                   
+                }
+                finally
+                {
+                    HttpContext.Session.SetString(SessionKeyName, GitlabName);
+                    HttpContext.Session.SetString(SessionKeyEmail, GitlabEmail);
+                    HttpContext.Session.SetInt32(SessionKeyId, x);
+                }             
 
 
             }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using System;
 
 namespace SWTlib
 {
@@ -33,6 +34,17 @@ namespace SWTlib
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
             });
 
 
@@ -82,6 +94,7 @@ namespace SWTlib
                     };
                 });
             services.AddSingleton(Configuration);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContextPool<LibraryContext>(
                 options => options.UseMySql(Configuration.GetConnectionString("LibraryConnection")));
         }
@@ -104,6 +117,7 @@ namespace SWTlib
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

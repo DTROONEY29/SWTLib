@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -23,7 +25,7 @@
     <link rel="stylesheet" href="~/lib/chosen/chosen.css" />
 
 </head>
-<body>    
+<body>
     <header>
         @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container">
@@ -58,9 +60,11 @@
                 <div class="d-flex flex-row w-25">
                     <div class="col"></div>
                     <div class="col text-center align-self-center">
-                        [Placeholder UserName]
+                        <p>
+                            @HttpContextAccessor.HttpContext.Session.GetString("_Name")
+                        </p>
                     </div>
-                    <div class="col text-center align-self-center">                        
+                    <div class="col text-center align-self-center">
                         <a href="https://gitlab.com/users/sign_out"><img src="/img/UserButton.png" width="48" height="48" alt="User" /></a>
                     </div>
                     <div class="col"></div>
@@ -99,7 +103,7 @@
                         <partial name="_CookieConsentPartial" />
 
                         <main role="main" class="pb-3 h-100">
-                            <partial name="_BusyIndicatorPartial" />                           
+                            <partial name="_BusyIndicatorPartial" />
                             @RenderBody()
                         </main>
                     </div>
