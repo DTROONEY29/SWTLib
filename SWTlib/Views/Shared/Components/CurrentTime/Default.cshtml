@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Default";
+}
+
+<h4><asp:label id="currentTime" runat="server"></asp:label></h4>
+
+
+
+@section  Scripts {
+<script runat="server">
+    protected void Page_Load(object sender, EventArgs e) {
+        currentTime.Text = DateTime.Now.ToString();
+    }
+</script>
+}
