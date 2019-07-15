@@ -13,6 +13,7 @@ using SWTlib.Models;
 using LibraryData;
 using LibraryData.Models;
 using User = LibraryData.Models.User;
+
 using Microsoft.AspNetCore.Http;
 
 namespace SWTlib.Pages
@@ -26,6 +27,8 @@ namespace SWTlib.Pages
         public const string SessionKeyEmail = "_Email";
 
         public const string SessionKeyId = "_Id";
+
+        public const string SessionKeyRoleId = "_RoleId";
 
         public IndexModel(LibraryContext context)
         {
@@ -66,23 +69,44 @@ namespace SWTlib.Pages
 
                
                 var user = new User();
+                var waitListEntry = new WaitListEntry();
+                
                 user.Name = GitlabName;
                 user.Id = x;
                 user.Email = GitlabEmail;
+                user.RoleId = 3;
+
+
+                waitListEntry.Name = GitlabName;
+                waitListEntry.Id = x;
+                waitListEntry.Email = GitlabEmail;
+                waitListEntry.RoleId = 3;
+
+
+                bool flag = false;
                 try
                 {
                     _context.Users.Add(user);
                     _context.SaveChanges();
-                } catch (Exception ex)
-                {
                    
-                }
-                finally
+
+                } catch (Exception ex)
+
                 {
                     HttpContext.Session.SetString(SessionKeyName, GitlabName);
                     HttpContext.Session.SetString(SessionKeyEmail, GitlabEmail);
                     HttpContext.Session.SetInt32(SessionKeyId, x);
-                }             
+                    HttpContext.Session.SetInt32(SessionKeyRoleId, 3);
+                   flag = true;
+
+                } finally {
+                    if (!flag)
+                    {
+                        _context.Users.Remove(user);
+                        _context.WaitList.Add(waitListEntry);
+                        _context.SaveChanges();
+                    }
+                }              
 
 
             }

@@ -57,15 +57,22 @@
                 <div class="w-75 align-content-center">
                     <h1 class="mx-auto text-swt-secondary text-center align-self-center pt-1 m-0 h-100">@ViewBag.Title</h1>
                 </div>
-                <div class="d-flex flex-row w-25">
+                <div class="d-flex flex-row w-50">
                     <div class="col"></div>
                     <div class="col text-center align-self-center">
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("_Name") == null)
+                        {
+                            <a asp-action="Login" asp-controller="Account" class="btn btn-default">Log In with Gitlab</a>
+                        }
+                        else
+                        {
                         <p>
-                            @HttpContextAccessor.HttpContext.Session.GetString("_Name")
+                        @HttpContextAccessor.HttpContext.Session.GetString("_Name")
                         </p>
+                        }                        
                     </div>
-                    <a class="col text-center align-self-center">                      
-                        <a href="https://gitlab.com/users/sign_out"><img src="/img/UserButton.png" width="48" height="48" alt="User" /></a>
+                    <a class="col text-center align-self-center" asp-controller="Account" asp-action="Logout">
+                        <img src="/img/UserButton.png" width="48" height="48" alt="User" />
                     </a>
                     <div class="col"></div>
                 </div>

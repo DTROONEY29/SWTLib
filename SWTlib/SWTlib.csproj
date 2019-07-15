@@ -44,4 +44,9 @@
     <None Include="wwwroot\img\ShoppingCart.png" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Views\NewFolder\" />
+  </ItemGroup>
+
 </Project>
