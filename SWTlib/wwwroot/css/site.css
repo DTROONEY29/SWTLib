@@ -98,6 +98,10 @@ a.clean-link {
     background-color: darkgray !important;
 }
 
+#books-hover-danger:hover {
+    background-color: darkred !important;
+}
+
 #img-button {
     width: 64px;
     height: 64px;
@@ -199,7 +203,7 @@ input.swt-button {
 }
 
 .btn-swt-outline-secondary {
-    border-radius: 0px 5px 5px 0px !important;
+    border-radius: 5px 0px 0px 5px !important;
 }
 
 /* Rating System */

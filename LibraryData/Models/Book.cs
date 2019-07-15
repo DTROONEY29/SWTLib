@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +14,7 @@ namespace LibraryData.Models
         public string Title { get; set; }
         [Required]
         [Column(TypeName = "varchar(20)")]
+        [Remote("IsIsbnExistend", "Book", AdditionalFields = "Id", ErrorMessage = "ISBN already exists.")]
         public string ISBN { get; set; }
         public string Publisher { get; set; }
         public int? Year { get; set; }
