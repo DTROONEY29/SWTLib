@@ -24,7 +24,7 @@ namespace SWTlib.Pages
 
         public string GitlabEmail { get; set; }
 
-        public string Id { get; set; }
+        public string GitlabId { get; set; }
 
 
 
@@ -34,10 +34,9 @@ namespace SWTlib.Pages
             if (User.Identity.IsAuthenticated)
             {
                 GitlabName = User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
-                GitlabLogin = User.FindFirst(c => c.Type == "urn:gitlab:login")?.Value;
-                GitlabUrl = User.FindFirst(c => c.Type == "urn:gitlab:url")?.Value;
+                GitlabId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 GitlabAvatar = User.FindFirst(c => c.Type == "urn:gitlab:avatar")?.Value;
-                GitlabEmail = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                GitlabEmail = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
 
                 string accessToken = await HttpContext.GetTokenAsync("access_token");
                 string idToken = await HttpContext.GetTokenAsync("id_token");
@@ -46,11 +45,11 @@ namespace SWTlib.Pages
 
 
 
-                Console.WriteLine(GitlabName);
-                
-                Console.WriteLine(Id);
+                Console.WriteLine(GitlabName);                
+                Console.WriteLine(GitlabId);
+                Console.WriteLine(GitlabEmail);
+                Console.WriteLine("SSSSSSSSSSSSSS");
 
-                Console.WriteLine(client.HostUrl);
 
             }
         }
