@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<LibraryData.Models.Reminder>
 
 @if (Model.Count() == 0)
-{   
-  <span>You have no Reminders set.</span>
+{
+    <span>You have no Reminders set.</span>
 }
 
 @foreach (var item in Model)
@@ -18,25 +18,32 @@
                             List<LibraryData.Models.Rental> rentals = new List<LibraryData.Models.Rental>();
                             var exists = rentals.Where(x => x.BookId == item.BookId);
 
-                             foreach (var rental in ViewData["Rentals"] as List<LibraryData.Models.Rental>)
+                            foreach (var rental in ViewData["Rentals"] as List<LibraryData.Models.Rental>)
                             {
                                 rentals.Add(rental);
                             }
 
-                            if (item.Book.Rental.ReturnDate.Date > DateTime.Today.Date)
+                            //If rental with given bookId exists in rentals-table.
+                            if (exists != null)
                             {
-                                <b><i>@Html.DisplayFor(modelItem => item.Book.Rental.ReturnDate)</i></b>
-                            }                           
-
-                            else if (exists != null)
-                            {
-                                <b style="color: darkred">NOT RETURNED</b>
+                                //If book.rental not empty
+                                if (item.Book.Rental != null)
+                                {
+                                    if (item.Book.Rental.ReturnDate.Date > DateTime.Today.Date)
+                                    {
+                                        <b><i>@Html.DisplayFor(modelItem => item.Book.Rental.ReturnDate)</i></b>
+                                    }
+                                    else
+                                    {
+                                        <b style="color: darkred">NOT RETURNED</b>
+                                    }
+                                }
+                                else
+                                {
+                                    <b style="color: green">AVAILABLE</b>
+                                }
                             }
 
-                            else
-                            {
-                                <b style="color: green">AVAILABLE</b>
-                            }
                         }
                     </div>
                 </div>
