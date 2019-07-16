@@ -28,8 +28,8 @@
           <td headers="email">@Html.DisplayFor(modelItem => item.Email)</td>
           <td headers="role">
               <form asp-action="Approve" asp-controller="Admin" method="post" asp-route-userid="@item.Id">
+                  <input type="hidden" asp-for="@item.Id" />
                   <select asp-for="@item.RoleId" class="form-control" asp-items="ViewBag.RoleName">
-                  <option value="">-- Select Role --</option>
                   </select>
                   <button type="submit" class="btn btn-danger">Approve</button>
               </form>

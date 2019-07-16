@@ -30,6 +30,7 @@ namespace SWTlib.Controllers
             
             return View(entries);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Approve(int userid, int roleid)
