@@ -69,6 +69,7 @@ body {
 
 .text-swt-primary {
     color: #fbba00;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .text-swt-primary:hover {
@@ -87,6 +88,9 @@ body {
     font-size: 2vw;
     font-weight: 300;
     line-height: 1.2;
+}
+.display-4 {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 a.clean-link {
@@ -146,6 +150,10 @@ a.clean-link {
 input.swt-button {
     width: 8em;
     height: 3em;
+}
+.btn-info {
+    background-color: #00457d;
+    color: white;
 }
 
 .rotate {
