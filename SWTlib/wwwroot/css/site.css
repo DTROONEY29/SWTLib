@@ -260,13 +260,18 @@ input.swt-button {
     color: darkgoldenrod;
 }
 
-bm-hover:hover .fa-bookmark:before {
+.bm-hover:hover .fa-bookmark:before {
     font-weight: bolder;
     z-index: 200;
 }
 
-bm-delete:hover .fa-window-close:before {
+.bm-delete:hover .fa-window-close:before {
     color: darkred !important;
     background-color: white !important;
     z-index: 200;
+}
+
+/* Wishlist */
+.arrow-hover:hover {
+    color: #f9bc0b;
 }

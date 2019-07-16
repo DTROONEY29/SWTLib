@@ -29,18 +29,34 @@
                                     @book.Book.Title
                                 </h3>
                             </div>
-                            <div class="d-flex p-1 w-25"><h5 class="pt-2">[Placeholder Rating]</h5></div>
+                            <div class="d-flex p-1 w-25">
+                                <div class="d-flex flex-row ml-3 w-100">
+                                    <div class="d-flex flex-row justify-content-center align-content-center">
+                                        <div class="align-self-center pb-1"><i class="far fa-thumbs-up fa-lg thumb-green"></i></div>
+                                        <div class="align-self-center ml-2"><big>@Html.DisplayFor(modelItem => book.Book.RatingUp)</big></div>
+                                    </div>
+                                    <div class="d-flex flex-row ml-4">
+                                        <div class="align-self-center pt-2"><i class="far fa-thumbs-down fa-lg thumb-red"></i></div>
+                                        <div class="align-self-center ml-2"><big>@Html.DisplayFor(modelItem => book.Book.RatingDown)</big></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="p-1 d-flex flex-row">
                             <div class="d-flex w-75">
                                 <div class="d-flex">
                                     <h5 class="font-italic pt-2 pb-2">
                                         By: @{
+                                            int a = 1;
                                             foreach (var author in book.Book.BookAuthors)
                                             {
 
-                                                <span>@author.Author.AuthorName; </span>
-
+                                                <span>@author.Author.AuthorName</span>
+                                                if (a < book.Book.BookAuthors.Count())
+                                                {
+                                                    <span>;</span>
+                                                    a++;
+                                                }
                                             }
                                         }
                                     </h5>
@@ -66,14 +82,14 @@
                         </div>
                         <div class="p-1 d-flex flex-row">
                             <div class="d-flex pr-3">
-                                <div class="d-flex">ISBN: @book.Book.ISBN</div>
+                                <div class="d-flex">ISBN: @Html.DisplayFor(modelItem => book.Book.ISBN)</div>
                             </div>
                             <div class="d-flex">
                                 <div class="d-flex pl-2 pr-3">
-                                    Publisher: @book.Book.Publisher,
-                                    @book.Book.Year
+                                    Publisher: @Html.DisplayFor(modelItem => book.Book.Publisher),
+                                    @Html.DisplayFor(modelItem => book.Book.Year)
                                 </div>
-                                <div class="d-flex pl-2">Language: @book.Book.Language</div>
+                                <div class="d-flex pl-2">Language: @Html.DisplayFor(modelItem => book.Book.Language)</div>
                                 <div class="d-flex">
                                     <div class="d-flex">
                                     </div>

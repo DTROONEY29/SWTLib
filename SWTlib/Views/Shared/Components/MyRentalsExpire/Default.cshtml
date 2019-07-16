@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<LibraryData.Models.Rental>
 
+@if (!Model.Any())
+{
+    <span>No rentals expire in 7 days or less.</span>
+}
 
 @foreach (var item in Model)
 {
