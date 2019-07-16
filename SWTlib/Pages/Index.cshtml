@@ -1,0 +1,25 @@
+﻿@page
+@model SWTlib.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+
+<div class="container">
+    <img src="~/img/SWTlogo.PNG" width="200" height="150" />
+
+</div>
+    <div class="row">
+        <div class="col-md-12">
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a asp-action="Login" asp-controller="Account" class="btn btn-default">Log In with Gitlab</a>
+            }
+            else
+            {
+              <meta http-equiv="refresh" content="0; URL='../home'" />
+            }
+        </div>
+    </div>

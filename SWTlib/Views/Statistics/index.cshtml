@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "STATISTICS";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+<div class="Container">
+    <h3>Usage Statistics</h3>
+    <h6>Below several usage statistics can be viewed and filtered. Hover over each bar to view available information: </h6>
+    <canvas id="barChart"></canvas>
+    
+    <script>
+        var ctx = document.getElementById('barChart');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Current Rentals', 'Current Authors', 'Current Book Count', 'Login Count', 'Search Count', 'Overall Rentals'],
+                datasets: [{
+                    label: 'Number of counts',
+                    data: [24, 19, 56, 32, 59, 35],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    </script>
+
+    <p>
+        <ul>
+
+            <li><b>Current Rentals</b> - The current number of books that have been rented using SWTlib.</li>
+            <li><b>Current Authors</b> - The current number of authors with titles available within SWTlib.</li>
+            <li><b>Current Book Count</b> - The current total of books available in SWTlib. </li>
+            <li><b>Login Count</b> - The total number of logins for all time. </li>
+            <li><b>Serach Count</b> - The total number of search queries performed (for all time).</li>
+            <li><b>Overall Rentals</b> - The overall total of books that have been rented using SWTlib.</li>
+
+        </ul>
+    </p>
+
+    <h6>The chart below displays overall SWTlib usage throughout the year, you can hover over each point to view the available information:</h6>
+
+    <canvas id="timelineChart"></canvas>
+
+    <script>
+
+        var ctx = document.getElementById('timelineChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [{
+                    label: 'SWTlib Traffic (In counts)',
+                    backgroundColor: 'rgb(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235, 1)',
+                    data: [0, 10, 5, 2, 20, 30, 45, 52]
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+
+
+    </script>
+
+
+
+</div>
+
