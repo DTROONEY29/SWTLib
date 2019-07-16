@@ -21,6 +21,7 @@ namespace LibraryData
         public DbSet<Bookmark> Bookmarks { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
+        public DbSet<WishListEntry> WishList { get; set; }
 
 
 
