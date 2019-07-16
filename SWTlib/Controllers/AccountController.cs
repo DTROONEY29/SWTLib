@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using LibraryData;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
+public class AccountController : Controller { 
 
-public class AccountController : Controller
-{
+    
+
     [HttpGet]
     [Route("[controller]/[action]")]
     public IActionResult Login(string returnUrl = "/")
@@ -17,7 +20,6 @@ public class AccountController : Controller
         HttpContext.Session.Clear();
         return Redirect("https://gitlab.rz.uni-bamberg.de/users/sign_out");
     }
-
 
 }
 

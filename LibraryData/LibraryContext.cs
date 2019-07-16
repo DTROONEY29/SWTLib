@@ -20,6 +20,7 @@ namespace LibraryData
         public DbSet<Bookmark> Bookmarks { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
 
         public LibraryContext(DbContextOptions<LibraryContext> options) : base(options) { }
@@ -59,6 +60,9 @@ namespace LibraryData
 
             modelBuilder.Entity<Reminder>()
                 .HasKey(c => new { c.UserId, c.BookId });
+
+            modelBuilder.Entity<WaitListEntry>()
+                .HasKey(c => new { c.RoleId });
         }
     }
 }

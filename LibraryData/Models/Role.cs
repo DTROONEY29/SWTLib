@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryData.Models
 {
-    class Role
+    public class Role
     {
         public int RoleId { get; set; }
         public string RoleName { get; set; }

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using GitLabApiClient;
-using GitLabApiClient.Models.Issues.Responses;
-using GitLabApiClient.Models.Users.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -62,15 +59,14 @@ namespace SWTlib.Pages
                 string accessToken = await HttpContext.GetTokenAsync("access_token");
                 string idToken = await HttpContext.GetTokenAsync("id_token");
 
-                var client = new GitLabClient("https://gitlab.rz.uni-bamberg.de/", accessToken);
 
                 int x = 0;
                 Int32.TryParse(GitlabId, out x);
 
-               
+
                 var user = new User();
                 var waitListEntry = new WaitListEntry();
-                
+
                 user.Name = GitlabName;
                 user.Id = x;
                 user.Email = GitlabEmail;
@@ -88,28 +84,37 @@ namespace SWTlib.Pages
                 {
                     _context.Users.Add(user);
                     _context.SaveChanges();
-                   
 
-                } catch (Exception ex)
+
+                }
+                catch (Exception ex)
 
                 {
                     HttpContext.Session.SetString(SessionKeyName, GitlabName);
                     HttpContext.Session.SetString(SessionKeyEmail, GitlabEmail);
                     HttpContext.Session.SetInt32(SessionKeyId, x);
                     HttpContext.Session.SetInt32(SessionKeyRoleId, 3);
-                   flag = true;
+                    flag = true;
 
-                } finally {
+                }
+                finally
+                {
                     if (!flag)
                     {
-                        _context.Users.Remove(user);
-                        _context.WaitList.Add(waitListEntry);
-                        _context.SaveChanges();
+                        try
+                        {
+                            _context.Users.Remove(user);
+                            _context.WaitList.Add(waitListEntry);
+                            _context.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
                     }
-                }              
-
-
+                }
             }
         }
     }
 }
+
