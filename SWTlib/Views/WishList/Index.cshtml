@@ -40,7 +40,7 @@
                 <div class="col-5"></div>
                 <div class="d-flex w-100 justify-content-around">
                     <div class="form-group mt-3">
-                        <a type="button" href="mailto:example@gmail.com?subject=Buchbestellung&body={@ViewBag.Wishlist}" class="btn swt-button">Generate Email</a>
+                        <a type="button" href="mailto:example@gmail.com?subject=Buchbestellung&body=@string.Join(",", ViewBag.WishList)" class="btn swt-button">Generate Email</a>
                     </div>
 
                     <div class="form-group mt-3">

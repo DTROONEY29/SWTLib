@@ -19,7 +19,21 @@ namespace SWTlib.Controllers
         public IActionResult Index()
         {
             var wishes = _context.WishList.ToList();
-            ViewBag.Wishlsit = wishes;
+            int i = 1;
+            string message = "Hallo Frau XXZ,%0D%0A%0D%0A bitte bestellen Sie folgende Bücher:%0D%0A";
+
+            foreach (var wish in wishes)
+            {
+                if(i <= 5)
+                {
+                    message += i + ") " + "Title: " + wish.Title + "    ISBN: " + wish.ISBN + "    Author(s): " + wish.AuthorName + "%0D%0A";
+                    i++;
+                }
+            }
+
+            message += "%0D%0A%0D%0AVielen Dank.";
+
+            ViewBag.Wishlist = message;
 
             return View();
         }
