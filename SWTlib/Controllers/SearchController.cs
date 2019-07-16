@@ -69,17 +69,21 @@ namespace SWTlib.Controllers
             //Advanced search field.
             else if (!String.IsNullOrEmpty(searchString) || !String.IsNullOrEmpty(searchPublisher) || !String.IsNullOrEmpty(searchRoom) || selectedAuthors.Length != 0 || selectedCategories.Length != 0 || selectedKeywords.Length != 0)
             {
-                string[] searchTerms = searchString.Split(' ');
-
-                foreach (var term in searchTerms)
+                if (!String.IsNullOrEmpty(searchString)) 
                 {
-                    sBooks.AddRange(books.Where(s => s.Title.Contains(term)
-                    || s.ISBN.Contains(term)
-                    || s.Publisher.Contains(searchPublisher)
-                    || s.Year.ToString().Contains(term)
-                    || s.Location.Id.ToString().Contains(searchRoom)
-                    ));
+                    string[] searchTerms = searchString.Split(' ');
+
+                    foreach (var term in searchTerms)
+                    {
+                        sBooks.AddRange(books.Where(s => s.Title.Contains(term)
+                        || s.ISBN.Contains(term)
+                        || s.Publisher.Contains(searchPublisher)
+                        || s.Year.ToString().Contains(term)
+                        || s.Location.Id.ToString().Contains(searchRoom)
+                        ));
+                    }
                 }
+
                 /*
                 sBooks.AddRange(books.Where(s => s.Publisher.Contains(searchPublisher)
                 || s.Location.Id.ToString().Contains(searchRoom)
@@ -89,16 +93,32 @@ namespace SWTlib.Controllers
 
                 foreach (var a in selectedAuthors)
                 {
-                    multipleSearch.UnionWith(authors.Where(b => b.AuthorId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookAuthors).ThenInclude(i => i.Author));
+                    multipleSearch.UnionWith(authors.Where(b => b.AuthorId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookKeywords)
+                                                                                                                            .ThenInclude(i => i.Keyword)
+                                                                                                                       .Include(i => i.BookCategories)
+                                                                                                                            .ThenInclude(i => i.Category)
+                                                                                                                       .Include(i => i.BookAuthors)
+                                                                                                                            .ThenInclude(i => i.Author));
                 }
                 foreach (var a in selectedCategories)
                 {
-                    multipleSearch.UnionWith(categories.Where(b => b.CategoryId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookCategories).ThenInclude(i => i.Category));
+                    multipleSearch.UnionWith(categories.Where(b => b.CategoryId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookKeywords)
+                                                                                                                            .ThenInclude(i => i.Keyword)
+                                                                                                                       .Include(i => i.BookCategories)
+                                                                                                                            .ThenInclude(i => i.Category)
+                                                                                                                       .Include(i => i.BookAuthors)
+                                                                                                                            .ThenInclude(i => i.Author));
                 }
                 foreach (var a in selectedKeywords)
                 {
-                    multipleSearch.UnionWith(keywords.Where(b => b.KeywordId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookKeywords).ThenInclude(i => i.Keyword));
+                    multipleSearch.UnionWith(keywords.Where(b => b.KeywordId == Convert.ToInt32(a)).Select(i => i.Book).Include(i => i.BookKeywords)
+                                                                                                                            .ThenInclude(i => i.Keyword)
+                                                                                                                       .Include(i => i.BookCategories)
+                                                                                                                            .ThenInclude(i => i.Category)
+                                                                                                                       .Include(i => i.BookAuthors)
+                                                                                                                            .ThenInclude(i => i.Author));
                 }
+
                                 
                 sBooks = multipleSearch.ToList();
 
