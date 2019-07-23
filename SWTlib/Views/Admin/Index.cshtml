@@ -30,7 +30,6 @@
             <td headers="role">
                 <form asp-action="Approve" asp-controller="Admin" method="post" asp-route-userid="@item.Id">
                     <input type="hidden" asp-for="@item.Id" />
-                    <select class="form-control" asp-items="ViewBag.RoleName"></select>
                     <button type="submit" class="btn btn-danger">Approve</button>
                 </form>
             </td>
