@@ -8,5 +8,6 @@ namespace LibraryData.Models
     {
         public int RoleId { get; set; }
         public string RoleName { get; set; }
+        public ICollection<Role> Roles { get; set; }
     }
 }

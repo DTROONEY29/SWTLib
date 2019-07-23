@@ -62,14 +62,16 @@
                     <div class="col text-center align-self-center">
                         @if (HttpContextAccessor.HttpContext.Session.GetString("_Name") == null)
                         {
-                            <a asp-action="Login" asp-controller="Account" class="btn btn-default">Log In with Gitlab</a>
+                            
+                            <a href="/">Login with Gitlab</a>
+
                         }
                         else
                         {
-                        <p>
-                        @HttpContextAccessor.HttpContext.Session.GetString("_Name")
-                        </p>
-                        }                        
+                            <p>
+                                @HttpContextAccessor.HttpContext.Session.GetString("_Name")
+                            </p>
+                        }
                     </div>
                     <a class="col text-center align-self-center" asp-controller="Account" asp-action="Logout">
                         <img src="/img/UserButton.png" width="48" height="48" alt="User" />

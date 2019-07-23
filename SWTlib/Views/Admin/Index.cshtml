@@ -23,21 +23,18 @@
         <th id="approve"></th>
     </tr>
     @foreach (var item in Model)
-    {<tr>
-          <td headers="name">@Html.DisplayFor(modelItem => item.Name)</td>
-          <td headers="email">@Html.DisplayFor(modelItem => item.Email)</td>
-          <td headers="role">
-              <form asp-action="Approve" asp-controller="Admin" method="post" asp-route-userid="@item.Id">
-                  <input type="hidden" asp-for="@item.Id" />
-                  <select asp-for="@item.RoleId" class="form-control" asp-items="ViewBag.RoleName">
-                  </select>
-                  <button type="submit" class="btn btn-danger">Approve</button>
-              </form>
-          </td>
-          <td headers="approve">              
-                  
-              
-          </td>
-     </tr>
-     }    
+    {
+        <tr>
+            <td headers="name">@Html.DisplayFor(modelItem => item.Name)</td>
+            <td headers="email">@Html.DisplayFor(modelItem => item.Email)</td>
+            <td headers="role">
+                <form asp-action="Approve" asp-controller="Admin" method="post" asp-route-userid="@item.Id">
+                    <input type="hidden" asp-for="@item.Id" />
+                    <select class="form-control" asp-items="ViewBag.RoleName"></select>
+                    <button type="submit" class="btn btn-danger">Approve</button>
+                </form>
+            </td>
+            <td headers="approve"></td>
+        </tr>
+    }
 </table>

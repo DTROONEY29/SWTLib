@@ -79,7 +79,7 @@ namespace SWTlib.Pages
                 waitListEntry.RoleId = 3;
 
 
-                bool flag = false;
+                bool IsInUsers = false;
                 try
                 {
                     _context.Users.Add(user);
@@ -87,27 +87,29 @@ namespace SWTlib.Pages
 
 
                 }
-                catch (Exception ex)
+                catch (Exception)
 
                 {
                     HttpContext.Session.SetString(SessionKeyName, GitlabName);
                     HttpContext.Session.SetString(SessionKeyEmail, GitlabEmail);
                     HttpContext.Session.SetInt32(SessionKeyId, x);
                     HttpContext.Session.SetInt32(SessionKeyRoleId, 3);
-                    flag = true;
+                    IsInUsers = true;
 
                 }
                 finally
                 {
-                    if (!flag)
+                    if (!IsInUsers)
                     {
                         try
                         {
+
                             _context.Users.Remove(user);
+                            _context.SaveChanges();
                             _context.WaitList.Add(waitListEntry);
                             _context.SaveChanges();
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
 
                         }
