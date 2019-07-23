@@ -1,4 +1,8 @@
 ﻿@model LibraryData.Models.Book
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+
 
 @{
     ViewData["Title"] = "BOOK DETAIL VIEW";
@@ -71,22 +75,22 @@
                             if (ViewBag.Ratings == true)
                             {
                                 <div class="d-flex flex-row justify-content-center align-content-center">
-                                    <div class="align-self-center pb-1">                                        
-                                            <div class="thumb-hover">
-                                                <button type="submit" class="bg-transparent border-0 btn-rating disabled">
-                                                    <i class="fas fa-thumbs-up fa-lg thumb-green"></i>
-                                                </button>
-                                            </div>                                        
+                                    <div class="align-self-center pb-1">
+                                        <div class="thumb-hover">
+                                            <button type="submit" class="bg-transparent border-0 btn-rating disabled">
+                                                <i class="fas fa-thumbs-up fa-lg thumb-green"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingUp)</big></div>
                                 </div>
                                 <div class="d-flex flex-row ml-4">
                                     <div class="align-self-center pt-2">
-                                            <div class="thumb-hover">
-                                                <button type="submit" class="bg-transparent border-0 btn-rating disabled">
-                                                    <i class="fas fa-thumbs-down fa-lg thumb-red"></i>
-                                                </button>
-                                            </div>
+                                        <div class="thumb-hover">
+                                            <button type="submit" class="bg-transparent border-0 btn-rating disabled">
+                                                <i class="fas fa-thumbs-down fa-lg thumb-red"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="align-self-center ml-2"><big>@Html.DisplayFor(model => model.RatingDown)</big></div>
                                 </div>
@@ -186,7 +190,10 @@
                     }
                     if (Model.Status == true)
                     {
-                        <form asp-action="AddReminder" asp-controller="Rental" method="post" asp-route-bookid="@Model.Id" asp-route-userid="1">
+                        var name = @HttpContextAccessor.HttpContext.Session.GetString("_Name");
+
+
+                        <form asp-action="AddReminder" asp-controller="Rental" method="post" asp-route-bookid="@Model.Id" asp-route-userid="@HttpContextAccessor.HttpContext.Session.GetInt32("_Id")">
                             <button type="submit" class="btn btn-danger pl-5 pr-5 pt-3 pb-3">Set Reminder</button>
                         </form>
                     }

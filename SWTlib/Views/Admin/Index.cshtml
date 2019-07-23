@@ -27,13 +27,19 @@
           <td headers="name">@Html.DisplayFor(modelItem => item.Name)</td>
           <td headers="email">@Html.DisplayFor(modelItem => item.Email)</td>
           <td headers="role">
-              <form asp-action="Approve" asp-controller="Admin" method="post" asp-route-userid="@item.Id">
-                  <input type="hidden" asp-for="@item.Id" />
+              <form asp-action="Approve" asp-controller="Admin" asp-route-userid="@item.Id">
+                  
                   <select asp-for="@item.RoleId" class="form-control" asp-items="ViewBag.RoleName">
                   </select>
-                  <button type="submit" class="btn btn-danger">Approve</button>
+                  <input type="submit" class="btn btn-danger" value="Approve" />
               </form>
           </td>
+    <td>
+        <form asp-action="Update" asp-controller="Admin">
+            <input type="hidden" asp-for="@item.Id" />
+            <input type="submit" name="update" value="Update" />
+        </form>
+    </td>
           <td headers="approve">              
                   
               

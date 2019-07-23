@@ -1,5 +1,6 @@
 ﻿using LibraryData;
 using LibraryData.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,11 +20,11 @@ namespace SWTlib.Models.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int? id)
         {
-            
+            int? userid = HttpContext.Session.GetInt32("_Id");
             var reminders = await _context.Reminders
                 .Include(i => i.Book)
                     .ThenInclude(i => i.Rental)
-                .Where(x => x.UserId == id)
+                .Where(x => x.UserId == userid)
                 .OrderBy(x => x.Book.Rental.ReturnDate)
                 .ToListAsync();
 

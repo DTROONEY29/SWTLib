@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<LibraryData.Models.Reminder>
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @if (Model.Count() == 0)
 {
@@ -48,7 +50,7 @@
                     </div>
                 </div>
                 <div class="d-flex">
-                    <form asp-action="DeleteReminder" asp-controller="Rental" method="post" asp-route-bookid="@item.Book.Id" asp-route-userid="1">
+                    <form asp-action="DeleteReminder" asp-controller="Rental" method="post" asp-route-bookid="@item.Book.Id" asp-route-userid="@HttpContextAccessor.HttpContext.Session.GetInt32("_Id")">
                         <div class="bm-delete">
                             <button type="submit" class="bg-transparent border-0 btn-rating">
                                 <i class="fas fa-window-close thumb-red"></i>
