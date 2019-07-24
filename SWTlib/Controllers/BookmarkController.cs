@@ -22,9 +22,12 @@ namespace SWTlib.Controllers
         // GET: Bookmark
         public ActionResult Index(int? id)
         {
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             var viewModel = new BookmarkViewModel
             {
-                BookmarkList = _context.Bookmarks
+                BookmarkList = _context.Bookmarks.Where(u => u.UserId == user.Id)
                 .Include(i => i.Book)
                 .Include(i => i.Book.BookAuthors)
                 .ThenInclude(i => i.Author)
@@ -55,11 +58,14 @@ namespace SWTlib.Controllers
         // POST: Bookmark/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SetBookmark(int UserId, int BookId)
+        public IActionResult SetBookmark(int BookId)
         {
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             var bm = new Bookmark
             {
-                UserId = UserId,
+                UserId = user.Id,
                 BookId = BookId
             };
 
@@ -78,9 +84,12 @@ namespace SWTlib.Controllers
         // POST: Bookmark/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteBookmark(int UserId, int BookId)
+        public IActionResult DeleteBookmark(int BookId)
         {
-            var bookmark = _context.Bookmarks.Find(UserId, BookId);
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
+            var bookmark = _context.Bookmarks.Find(user.Id, BookId);
 
             if (bookmark == null)
             {

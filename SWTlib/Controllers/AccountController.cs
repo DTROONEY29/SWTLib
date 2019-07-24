@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
-public class AccountController : Controller { 
-
-    
+public class AccountController : Controller
+{
+    private readonly LibraryContext _context;
+    public AccountController(LibraryContext context)
+    {
+        _context = context;
+    }
 
     [HttpGet]
     [Route("[controller]/[action]")]

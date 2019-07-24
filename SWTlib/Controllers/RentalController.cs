@@ -95,9 +95,12 @@ namespace SWTlib.Controllers
         // GET: Rental
         public ActionResult Index(int? id)
         {
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             var viewModel = new RentalViewModel
             {
-                RentalList = _context.Rentals
+                RentalList = _context.Rentals.Where(u => u.UserId == user.Id)
                 .Include(i => i.Book)
                 .Include(i => i.Book.BookAuthors)
                     .ThenInclude(i => i.Author)
