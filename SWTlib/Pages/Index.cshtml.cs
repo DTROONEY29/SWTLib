@@ -20,12 +20,10 @@ namespace SWTlib.Pages
         private readonly LibraryContext _context;
 
         public const string SessionKeyName = "_Name";
-
         public const string SessionKeyEmail = "_Email";
-
         public const string SessionKeyId = "_Id";
-
         public const string SessionKeyRoleId = "_RoleId";
+        public const string SessionKeyAvatar = "_Avatar";
 
         public IndexModel(LibraryContext context)
         {
@@ -94,6 +92,8 @@ namespace SWTlib.Pages
                     HttpContext.Session.SetString(SessionKeyEmail, GitlabEmail);
                     HttpContext.Session.SetInt32(SessionKeyId, x);
                     HttpContext.Session.SetInt32(SessionKeyRoleId, 3);
+                    HttpContext.Session.SetString(SessionKeyAvatar, GitlabAvatar);
+
                     flag = true;
 
                 }

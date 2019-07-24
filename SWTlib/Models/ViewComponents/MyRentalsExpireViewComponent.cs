@@ -1,4 +1,5 @@
 ﻿using LibraryData;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,8 +21,10 @@ namespace SWTlib.Models.ViewComponents
         {
             var today = DateTime.Today.Date;
             var timeSpan = today.AddDays(7);
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
 
-            var allRentals = await _context.Rentals
+            var allRentals = await _context.Rentals.Where(u => u.UserId == user.Id)
                 .Include(i => i.Book)
                 .OrderBy(i => i.ReturnDate)
                 .ToListAsync();

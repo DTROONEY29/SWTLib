@@ -24,8 +24,27 @@
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.css">
     <link rel="stylesheet" href="~/lib/chosen/chosen.css" />
 
+    @* Show current time in right sidebar. *@
+    <script>
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('currentTime').innerHTML =
+                h + ":" + m + ":" + s;
+            var t = setTimeout(startTime, 500);
+        }
+        function checkTime(i) {
+            if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+            return i;
+        }
+    </script>
+
 </head>
-<body>
+<body onload="startTime()">
     <header>
         @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container">
@@ -47,7 +66,7 @@
                     </div>
                 </div>
             </nav>*@
-        <nav class="navbar navbar-light bg-swt-secondary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-swt-secondary border-bottom box-shadow mb-3">
             <div class="d-flex flex-row justify-content-center w-100">
                 <div class="w-25 align-self-center justify-content-center">
                     <a class="navbar-brand w-100" asp-controller="Home" asp-action="Index">
@@ -57,24 +76,27 @@
                 <div class="w-75 align-content-center">
                     <h1 class="mx-auto text-swt-secondary text-center align-self-center pt-1 m-0 h-100">@ViewBag.Title</h1>
                 </div>
-                <div class="d-flex flex-row w-50">
-                    <div class="col"></div>
-                    <div class="col text-center align-self-center">
+                <div class="d-flex flex-row w-25 justify-content-center">
+                    <div class="col text-right align-self-center w-100 pr-0">
                         @if (HttpContextAccessor.HttpContext.Session.GetString("_Name") == null)
                         {
                             <a asp-action="Login" asp-controller="Account" class="btn btn-default">Log In with Gitlab</a>
                         }
                         else
                         {
-                        <p>
-                        @HttpContextAccessor.HttpContext.Session.GetString("_Name")
-                        </p>
-                        }                        
+                            <div>
+                                <h4 class="m-0">@HttpContextAccessor.HttpContext.Session.GetString("_Name")</h4>
+                            </div>
+                        }
                     </div>
-                    <a class="col text-center align-self-center" asp-controller="Account" asp-action="Logout">
-                        <img src="/img/UserButton.png" width="48" height="48" alt="User" />
-                    </a>
-                    <div class="col"></div>
+                    <div class="col-4 align-self-center pl-2" id="img-overlay">
+                        <a asp-controller="Account" asp-action="Logout">
+                            <img src="@HttpContextAccessor.HttpContext.Session.GetString("_Avatar")" width="48" height="48" alt="UserImg" style="border-radius: 50%" />
+                            <div class="red-overlay ml-2">
+                                <div id="logout-text">Logout</div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -83,32 +105,27 @@
     <div>
         <div class="container-fluid">
             <div class="row ml-4 mr-4 sidenav">
-                <div class="col col-lg-2 bg-swt-primary box-shadow shadow">
+                <div class="col col-lg-2 bg-swt-primary box-shadow shadow p-0">
                     <ul class="nav flex-column bg-swt display-5">
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
                         </li>
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-area="" asp-controller="Rental" asp-action="Index">Rentals</a>
                         </li>
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-area="" asp-controller="Bookmark" asp-action="Index">Bookmarks</a>
                         </li>
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-controller="WishList" asp-action="Index">Wishlist</a>
                         </li>
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-controller="Statistics" asp-action="Index">Statistics</a>
                         </li>
-                        <li class="nav-item text-center">
-                            <a class="nav-link text-swt-primary" asp-controller="Home" asp-action="AddContent">Add Content</a>
-                        </li>
-                        <li class="nav-item text-center">
-                            <a class="nav-link text-swt-primary" asp-controller="Admin" asp-action="Index">WaitList</a>
-                        </li>
-                        <li class="nav-item text-center">
+                        <li class="nav-item text-center swt-nav-item shadow-sm">
                             <a class="nav-link text-swt-primary" asp-controller="Privacy" asp-action="Index">Privacy</a>
                         </li>
+                        @await Component.InvokeAsync("NavItem")
                     </ul>
                 </div>
                 <div class="col testwrapper">
@@ -125,10 +142,18 @@
                     <div class="text-center">
                         <div class="border rounded border-dark mt-3 shadow-lg">
                             <div class="border-bottom border-dark bg-swt-primary mb-2">
+                                <h1 class="text-white m-0" id="currentTime"></h1>
+                            </div>
+                            <div class="p-2">
+                                <h4>@DateTime.Today.Date.ToString("dddd, " + "dd. MMMM yyyy")</h4>
+                            </div>
+                        </div>
+                        <div class="border rounded border-dark mt-3 shadow-lg">
+                            <div class="border-bottom border-dark bg-swt-primary mb-2">
                                 <h3 class="text-white">My Reminders</h3>
                             </div>
                             <div class="p-2">
-                                @await Component.InvokeAsync("Reminder", new { id = 1})
+                                @await Component.InvokeAsync("Reminder", new { id = 1 })
                             </div>
                         </div>
                         <div class="border rounded border-dark mt-3 shadow-lg">
@@ -170,6 +195,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
 
-    @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)    
 </body>
 </html>

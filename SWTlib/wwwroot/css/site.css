@@ -7,6 +7,19 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+/* Navbar 
+---------------------------------------------------*/
+.swt-nav-item {
+    border-color: black;
+    border-radius: 5px;
+    background: linear-gradient(0deg, #002746, #00457d);
+    text-shadow: 2px 2px 2px black;
+}
+
+.swt-nav-item:hover {
+    background: linear-gradient(0deg, #002746, black);
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -275,11 +288,47 @@ input.swt-button {
 
 .bm-delete:hover .fa-window-close:before {
     color: darkred !important;
-    background-color: white !important;
     z-index: 200;
 }
 
 /* Wishlist */
 .arrow-hover:hover {
     color: #f9bc0b;
+}
+
+
+/* Logout Image */
+.red-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    width: 48px;
+    opacity: 0;
+    transition: .2s ease;
+    background-color: darkred;
+    border-radius: 50%;
+}
+
+#img-overlay {
+    position: relative;
+    width: 50%;
+}
+
+#img-overlay:hover .red-overlay {
+    opacity: 1;
+}
+
+#logout-text {
+    color: white;
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
 }

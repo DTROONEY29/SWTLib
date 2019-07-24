@@ -63,7 +63,11 @@ namespace LibraryData
                 .HasKey(c => new { c.UserId, c.BookId });
 
             modelBuilder.Entity<WaitListEntry>()
-                .HasKey(c => new { c.RoleId });
+                .HasKey(c => new { c.Id });
+
+            modelBuilder.Entity<WaitListEntry>()
+                .Property(c => c.RoleId)
+                .HasDefaultValue(0);
         }
     }
 }

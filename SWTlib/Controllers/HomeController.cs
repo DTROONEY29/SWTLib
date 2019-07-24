@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryData;
 using LibraryData.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWTlib.Models;
@@ -22,6 +23,11 @@ namespace SWTlib.Controllers
 
         public ActionResult Index(int? id)
         {
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
+            ViewData["User"] = user;
+
             try
             {
                 var viewModel = new BookViewModel
@@ -47,6 +53,7 @@ namespace SWTlib.Controllers
             {
                 throw new Exception("There went something wrong");
             }
+
 
             
         }

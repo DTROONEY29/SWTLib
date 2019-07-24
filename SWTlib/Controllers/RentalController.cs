@@ -95,9 +95,12 @@ namespace SWTlib.Controllers
         // GET: Rental
         public ActionResult Index(int? id)
         {
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             var viewModel = new RentalViewModel
             {
-                RentalList = _context.Rentals
+                RentalList = _context.Rentals.Where(u => u.UserId == user.Id)
                 .Include(i => i.Book)
                 .Include(i => i.Book.BookAuthors)
                     .ThenInclude(i => i.Author)
@@ -141,7 +144,10 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
+             
             var book = _context.Books.Find(id);
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
 
             if (book == null)
             {
@@ -151,10 +157,12 @@ namespace SWTlib.Controllers
             var createRental = new Rental
             {
                 BookId = book.Id,
-                Book = book
+                Book = book,
+                UserId = user.Id,
+                User = user
             };
 
-            //ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name");
+          
             ReturnDateDropDown();
             return View(createRental);
         }
@@ -164,9 +172,13 @@ namespace SWTlib.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind("RentalId,BookId,RentalDate,ReturnDate")] Rental createRental)
         {
-            
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             if (ModelState.IsValid)
-            {                
+            {
+                createRental.User = user;
+                createRental.UserId = user.Id;
                 _context.Rentals.Add(createRental);
                 _context.SaveChanges();
 
@@ -176,8 +188,6 @@ namespace SWTlib.Controllers
 
                 return RedirectToAction("Index", "Rental");
             }
-
-            //ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", borrowHistory.CustomerId);
             return View(createRental);
         }
 
@@ -301,6 +311,8 @@ namespace SWTlib.Controllers
         {
             var book = _context.Books.Find(bookid);
             var user = _context.Users.Find(userid);
+
+
 
             var newReminder = new Reminder
             {
