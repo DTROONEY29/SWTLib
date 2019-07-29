@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryData.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20190713190426_Initial 1.9")]
-    partial class Initial19
+    [Migration("20190729160239_Final 1.0")]
+    partial class Final10
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("LibraryData.Models.Author", b =>
@@ -172,6 +172,8 @@ namespace LibraryData.Migrations
 
                     b.HasKey("UserId", "BookId");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("Ratings");
                 });
 
@@ -203,7 +205,7 @@ namespace LibraryData.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
-                    b.Property<int?>("UserId");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
@@ -215,6 +217,22 @@ namespace LibraryData.Migrations
                     b.ToTable("Rentals");
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("RoleId1");
+
+                    b.Property<string>("RoleName");
+
+                    b.HasKey("RoleId");
+
+                    b.HasIndex("RoleId1");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("LibraryData.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -222,15 +240,51 @@ namespace LibraryData.Migrations
 
                     b.Property<string>("Email");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("Name");
 
-                    b.Property<bool>("IsChairMember");
-
-                    b.Property<string>("LastName");
+                    b.Property<int>("RoleId");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.WaitListEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("WaitList");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.WishListEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AuthorName");
+
+                    b.Property<string>("ISBN");
+
+                    b.Property<int>("Rating");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WishList");
                 });
 
             modelBuilder.Entity("LibraryData.Models.Book", b =>
@@ -293,6 +347,19 @@ namespace LibraryData.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("LibraryData.Models.Reminder", b =>
                 {
                     b.HasOne("LibraryData.Models.Book", "Book")
@@ -313,9 +380,25 @@ namespace LibraryData.Migrations
                         .HasForeignKey("LibraryData.Models.Rental", "BookId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("LibraryData.Models.User")
+                    b.HasOne("LibraryData.Models.User", "User")
                         .WithMany("Rentals")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LibraryData.Models.Role", b =>
+                {
+                    b.HasOne("LibraryData.Models.Role")
+                        .WithMany("Roles")
+                        .HasForeignKey("RoleId1");
+                });
+
+            modelBuilder.Entity("LibraryData.Models.WaitListEntry", b =>
+                {
+                    b.HasOne("LibraryData.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

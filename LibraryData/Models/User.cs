@@ -10,7 +10,7 @@ namespace LibraryData.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public int RoleId { get; set; }
-
+        public Role Role { get; set; }
         public ICollection<Bookmark> Bookmarks { get; set; }
         public ICollection<Rental> Rentals { get; set; }
     }
