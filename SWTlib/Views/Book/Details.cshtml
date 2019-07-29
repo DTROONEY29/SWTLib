@@ -99,7 +99,7 @@
                             {
                                 <div class="d-flex flex-row justify-content-center align-content-center">
                                     <div class="align-self-center pb-1">
-                                        <form asp-action="AddUp" asp-controller="Book" method="post" asp-route-userid="1" asp-route-bookid="@Model.Id">
+                                        <form asp-action="AddUp" asp-controller="Book" method="post" asp-route-userid="@HttpContextAccessor.HttpContext.Session.GetInt32("_Id")" asp-route-bookid="@Model.Id">
                                             <div class="thumb-hover">
                                                 <button type="submit" class="bg-transparent border-0 btn-rating">
                                                     <i class="far fa-thumbs-up fa-lg thumb-green"></i>
@@ -112,7 +112,7 @@
                                 <div class="d-flex flex-row ml-4">
                                     <div class="align-self-center pt-2">
 
-                                        <form asp-action="AddDown" asp-controller="Book" method="post" asp-route-userid="1" asp-route-bookid="@Model.Id">
+                                        <form asp-action="AddDown" asp-controller="Book" method="post" asp-route-userid="@HttpContextAccessor.HttpContext.Session.GetInt32("_Id")" asp-route-bookid="@Model.Id">
                                             <div class="thumb-hover">
                                                 <button type="submit" class="bg-transparent border-0 btn-rating">
                                                     <i class="far fa-thumbs-down fa-lg thumb-red"></i>
@@ -189,10 +189,7 @@
                         <a type="button" class="btn btn-success pl-5 pr-5 pt-3 pb-3" asp-controller="Rental" asp-action="Create" asp-route-id="@Model.Id">Rent</a>
                     }
                     if (Model.Status == true)
-                    {
-                        var name = @HttpContextAccessor.HttpContext.Session.GetString("_Name");
-
-
+                    {                    
                         <form asp-action="AddReminder" asp-controller="Rental" method="post" asp-route-bookid="@Model.Id" asp-route-userid="@HttpContextAccessor.HttpContext.Session.GetInt32("_Id")">
                             <button type="submit" class="btn btn-danger pl-5 pr-5 pt-3 pb-3">Set Reminder</button>
                         </form>
@@ -202,25 +199,3 @@
         </div>
     </div>
 </div>
-
-
-@section Scripts{
-    <script type="text/javascript">
-        //modify as needed to make it pass in what you need.
-        function AddDown(Id) {
-            $.ajax({
-                url: "@Url.Action("AddDown","Book")",
-                data: { Id = Id },
-            cache: false,
-            contentType: false,
-            processData: false,
-            type: "POST",
-            success: function (data) {
-                //TODO: Add whatever if you want to pass a notification back
-            },
-            error: function(error) {
-                //TODO: Add some code here for error handling or notifications
-            }
-        }
-    </script>
-}

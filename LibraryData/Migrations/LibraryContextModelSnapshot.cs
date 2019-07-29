@@ -170,6 +170,8 @@ namespace LibraryData.Migrations
 
                     b.HasKey("UserId", "BookId");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("Ratings");
                 });
 
@@ -201,7 +203,7 @@ namespace LibraryData.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
-                    b.Property<int?>("UserId");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
@@ -218,13 +220,9 @@ namespace LibraryData.Migrations
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("RoleId1");
-
                     b.Property<string>("RoleName");
 
                     b.HasKey("RoleId");
-
-                    b.HasIndex("RoleId1");
 
                     b.ToTable("Roles");
                 });
@@ -241,6 +239,8 @@ namespace LibraryData.Migrations
                     b.Property<int>("RoleId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -343,6 +343,19 @@ namespace LibraryData.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("LibraryData.Models.Rating", b =>
+                {
+                    b.HasOne("LibraryData.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LibraryData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("LibraryData.Models.Reminder", b =>
                 {
                     b.HasOne("LibraryData.Models.Book", "Book")
@@ -363,16 +376,18 @@ namespace LibraryData.Migrations
                         .HasForeignKey("LibraryData.Models.Rental", "BookId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("LibraryData.Models.User")
+                    b.HasOne("LibraryData.Models.User", "User")
                         .WithMany("Rentals")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("LibraryData.Models.Role", b =>
+            modelBuilder.Entity("LibraryData.Models.User", b =>
                 {
-                    b.HasOne("LibraryData.Models.Role")
-                        .WithMany("Roles")
-                        .HasForeignKey("RoleId1");
+                    b.HasOne("LibraryData.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LibraryData.Models.WaitListEntry", b =>

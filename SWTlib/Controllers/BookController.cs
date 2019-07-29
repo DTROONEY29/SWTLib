@@ -66,6 +66,9 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
+            var sessionId = HttpContext.Session.GetInt32("_Id");
+            var user = _context.Users.FirstOrDefault(i => i.Id == sessionId);
+
             var book = await _context.Books
                 .Include(i => i.Location)
                 .Include(i => i.BookAuthors)
@@ -81,7 +84,7 @@ namespace SWTlib.Controllers
                 return NotFound();
             }
 
-            CheckRating(id, 1);
+            CheckRating(id, user.Id);
 
             return View(book);
         }
