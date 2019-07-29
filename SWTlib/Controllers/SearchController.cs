@@ -48,7 +48,11 @@ namespace SWTlib.Controllers
             var bookmarks = _context.Bookmarks.ToList();
 
             //Simple search field
-            if(selectedAuthors.Length == 0 && selectedCategories.Length == 0 && selectedKeywords.Length == 0 && String.IsNullOrEmpty(searchPublisher) && String.IsNullOrEmpty(searchRoom))
+            if(selectedAuthors.Length == 0 
+                && selectedCategories.Length == 0 
+                && selectedKeywords.Length == 0 
+                && String.IsNullOrEmpty(searchPublisher) 
+                && String.IsNullOrEmpty(searchRoom))
             {
                 if (!String.IsNullOrEmpty(searchString))
                 {
@@ -67,7 +71,12 @@ namespace SWTlib.Controllers
             }
 
             //Advanced search field.
-            else if (!String.IsNullOrEmpty(searchString) || !String.IsNullOrEmpty(searchPublisher) || !String.IsNullOrEmpty(searchRoom) || selectedAuthors.Length != 0 || selectedCategories.Length != 0 || selectedKeywords.Length != 0)
+            else if (!String.IsNullOrEmpty(searchString) 
+                || !String.IsNullOrEmpty(searchPublisher) 
+                || !String.IsNullOrEmpty(searchRoom) 
+                || selectedAuthors.Length != 0 
+                || selectedCategories.Length != 0 
+                || selectedKeywords.Length != 0)
             {
                 if (!String.IsNullOrEmpty(searchString)) 
                 {
@@ -84,11 +93,7 @@ namespace SWTlib.Controllers
                     }
                 }
 
-                /*
-                sBooks.AddRange(books.Where(s => s.Publisher.Contains(searchPublisher)
-                || s.Location.Id.ToString().Contains(searchRoom)
-                ));
-                */
+
                 HashSet<Book> multipleSearch = new HashSet<Book>();
 
                 foreach (var a in selectedAuthors)
