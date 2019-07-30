@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System;
 
 namespace SWTlib
 {

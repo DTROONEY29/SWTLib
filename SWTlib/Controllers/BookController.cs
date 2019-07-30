@@ -90,7 +90,6 @@ namespace SWTlib.Controllers
         }
 
 
-        //
         public void CheckRating(int? BookId, int? UserId)
         {
 
@@ -289,13 +288,7 @@ namespace SWTlib.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
-            var book = new Book
-            {
-                BookAuthors = new List<BookAuthor>(),
-                BookCategories = new List<BookCategory>(),
-                BookKeywords = new List<BookKeyword>()
-            };
-
+            
             LocationDropDownList();
 
             var authors = _context.Authors.Select(c => new
@@ -554,7 +547,7 @@ namespace SWTlib.Controllers
         }
 
 
-        // GET: Book/Delete/5
+        // GET: Book/Delete
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
@@ -574,7 +567,7 @@ namespace SWTlib.Controllers
             return View(book);
         }
 
-        // POST: Book/Delete/5
+        // POST: Book/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, IFormCollection collection)
@@ -602,7 +595,7 @@ namespace SWTlib.Controllers
             }
         }
 
-
+        // Rating Logic
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddDown(int userid, int bookid)
@@ -631,8 +624,7 @@ namespace SWTlib.Controllers
                 return RedirectToAction("Details", "Book", new { Id = bookid });
             }
         }
-
-        // Rating Logic
+               
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddUp(int userid, int bookid)
